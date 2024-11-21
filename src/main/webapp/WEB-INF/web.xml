@@ -8,12 +8,12 @@
         <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet-mapping>
+    <servlet-mapping> <!-- permet de gérer toutes les requêtes se terminant par *.xhtml -->
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
-    <welcome-file-list>
+    <welcome-file-list>   <!-- permet de définir index.html comme page d'acceuil de l'application -->
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
 </web-app>
