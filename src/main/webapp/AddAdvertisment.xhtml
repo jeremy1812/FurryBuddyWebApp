@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://xmlns.jcp.org/jsf/html"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Add Advertisement</title>
+</h:head>
+
+<h1>Add Advertisement</h1>
+
+<h:body>
+    <f:event type="preRenderView" listener="#{advertisementBean.loadAddAdvertisementPage()}" />
+    <h:messages/>
+    <h:form>
+        <!-- ID Displayed Only If Not Null -->
+        <h:outputText value="ID: " style="font-weight: bold" rendered="#{advertisementBean.id != null}" />
+        <h:outputText value="#{advertisementBean.id}" rendered="#{advertisementBean.id != null}" /><br/>
+
+        <!-- Advertisement Details -->
+        <b>Title: </b> <h:inputText value="#{advertisementBean.title}" /><br/>
+        <b>Description: </b> <h:inputTextarea value="#{advertisementBean.description}" rows="5" cols="30" /><br/>
+        <b>Category: </b> <h:inputText value="#{advertisementBean.category}" /><br/>
+        <b>Price: </b> <h:inputText value="#{advertisementBean.price}" /><br/>
+        <b>Contact Email: </b> <h:inputText value="#{advertisementBean.contactEmail}" /><br/><br/>
+
+        <!-- Submit Button -->
+        <h:commandButton action="#{advertisementBean.addAdvertisement()}" value="Add" />
+    </h:form>
+</h:body>
+
+</html>
