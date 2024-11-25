@@ -14,11 +14,11 @@ import java.util.List;
 @ApplicationScoped
 public class FurryBuddyService {
     private static final String BASE_URL = "http://localhost:8080/FurryBuddyService-1.0-SNAPSHOT/api/";
-    public WebTarget petOwnerTarget;
-    public WebTarget adopterTarget;
-    public WebTarget advertisementTarget;
-    public WebTarget adoptionRequestTarget;
-    public WebTarget serviceTarget;
+    private WebTarget petOwnerTarget;
+    private WebTarget adopterTarget;
+    private WebTarget advertisementTarget;
+    private WebTarget adoptionRequestTarget;
+    private WebTarget serviceTarget;
 
     @PostConstruct
     public void init() {

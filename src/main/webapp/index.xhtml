@@ -8,16 +8,21 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <f:view>
     <h:head>
-        <title>Welcome to FurryBuddyWebApp</title>
+        <title>FurryBuddy</title>
+        <h:outputStylesheet name="css/styles.css" />
     </h:head>
     <h:body>
-        <h1>PrimeFaces in Action</h1>
+        <div class="container">
+            <div class="header">
+                <h1>FurryBuddy</h1>
+                <h3>Your companion awaits</h3>
+            </div>
 
-        <!-- PrimeFaces Button -->
-        <p:button value="Click Me" icon="pi pi-check" />
-
-        <p:inputText placeholder="Enter Your name here..." />
-        <p:commandButton value="Submit" action="#{myBean.submit}" icon="pi pi-send" />
+            <div class="buttons">
+                <p:commandButton value="Log In" action="Login" styleClass="button"/>
+                <p:commandButton value="Sign Up" action="Register" styleClass="button"/>
+            </div>
+        </div>
     </h:body>
 </f:view>
 </html>
