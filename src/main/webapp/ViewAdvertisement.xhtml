@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<f:view>
+    <h:head>
+        <title>#{advertisementBean.selectedAdvertisement.pet.name}</title>
+    </h:head>
+    <h:body>
+        <f:event type="preRenderView" listener="#{advertisementBean.loadSpecificAdvertisement(advertisementBean.selectedAdvertisement)}" />
+
+        <div class="container">
+            <div class="header">
+                <h1>Advertisements</h1>
+            </div>
+                <div class="content">
+                    <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG"/>
+                    <div class="details">
+                        <p><strong>Name:</strong> #{advertisementBean.selectedAdvertisement.pet.name}</p>
+                        <p><strong>Species:</strong> #{advertisementBean.selectedAdvertisement.pet.species}</p>
+                        <p><strong>Breed:</strong> #{advertisementBean.selectedAdvertisement.pet.breed}</p>
+                        <p><strong>Age:</strong> #{advertisementBean.selectedAdvertisement.pet.age} years old</p>
+                        <p><strong>Description:</strong> #{advertisementBean.selectedAdvertisement.pet.description}</p>
+                        <p><strong>Location:</strong> #{advertisementBean.selectedAdvertisement.location.town}, #{advertisementBean.selectedAdvertisement.location.postalCode}</p>
+                        <p><strong>Price:</strong> $#{advertisementBean.selectedAdvertisement.pet.price}</p>
+                    </div>
+                    <a href="getAllAdvertisements.xhtml" class="back-btn">Back to All Advertisements</a>
+                </div>
+            </div>
+    </h:body>
+</f:view>
+</html>
