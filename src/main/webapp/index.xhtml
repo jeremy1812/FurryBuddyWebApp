@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:head>
-        <title>FurryBuddy</title>
-        <h:outputStylesheet name="css/styles.css" />
-    </h:head>
-    <h:body>
-        <div class="container">
-            <div class="header">
-                <h1>FurryBuddy</h1>
+<h:head>
+    <h:outputStylesheet name="css/styles.css" />
+    <title>Welcome to FurryBuddy</title>
+</h:head>
+<h:body>
+    <div class="container">
+        <!-- Buttons for Login and Register -->
+        <div class="buttons">
+            <p:panel style="width: 600px;">
+                <h:graphicImage width="280" value="/images/logo.png"/>
+                <br/>
+                <h1>Welcome to FurryBuddy</h1>
                 <h3>Your companion awaits</h3>
-            </div>
+            </p:panel>
 
-            <div class="buttons">
-                <p:commandButton value="Log In" action="Login" styleClass="button"/>
-                <p:commandButton value="Sign Up" action="Register" styleClass="button"/>
-            </div>
+            <p:panel style="width: 600px;">
+                <h:form id="buttonsForm">
+                    <h:outputText value="Choose an option:" style="font-weight:bold; font-size:18px"/>
+                    <br/>
+                    <br/>
+                    <!-- Link Styled As Button -->
+                    <h:link value="Log In" outcome="Login.xhtml" styleClass="button-style"/>
+                    <br/>
+                    <br/>
+                    <!-- Link Styled As Button -->
+                    <h:link value="Sign Up" outcome="Register.xhtml" styleClass="button-style"/>
+                </h:form>
+            </p:panel>
         </div>
-    </h:body>
-</f:view>
+    </div>
+</h:body>
 </html>

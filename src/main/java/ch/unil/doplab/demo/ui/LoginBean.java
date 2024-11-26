@@ -1,21 +1,85 @@
 package ch.unil.doplab.demo.ui;
-import jakarta.enterprise.context.RequestScoped;
+
+import ch.unil.doplab.demo.FurryBuddyService;
+import ch.unil.doplab.demo.ui.AdopterBean;
+import ch.unil.doplab.demo.ui.PetOwnerBean;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpSession;
+import java.io.Serializable;
 
-@Named
-@RequestScoped
-public class LoginBean {
+public class LoginBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String username;
     private String password;
-    private boolean loggedIn = false;
+    private String role; // petowner or adopter
 
-    // Hardcoded credentials for demo purposes
-    private final String validUsername = "admin";
-    private final String validPassword = "admin123";
-    
-    // Getters and setters
+    @Inject
+    FurryBuddyService furryBuddyService; // Service for authentication and data fetching
+
+    @Inject
+    PetOwnerBean petOwnerBean; // Bean to handle pet owners' data
+
+    @Inject
+    AdopterBean adopterBean; // Bean to handle adopters' data
+
+    public LoginBean() {
+        reset();
+    }
+
+    public void reset() {
+        username = null;
+        password = null;
+        role = null;
+    }
+
+    public String login() {
+        var uuid = furryBuddyService.authenticate(username, password, role); // Authenticate user
+        var session = getSession(true);
+        if (uuid != null) {
+            session.setAttribute("uuid", uuid);
+            session.setAttribute("username", username);
+            session.setAttribute("role", role);
+            switch (role.toLowerCase()) {
+                case "petowner":
+                    petOwnerBean.setUUID(uuid);
+                    petOwnerBean.loadPetOwnerData(); // Load data specific to the pet owner
+                    return "PetOwnerDashboard?faces-redirect=true"; // Redirect to pet owner dashboard
+                case "adopter":
+                    adopterBean.setUUID(uuid);
+                    adopterBean.loadAdopterData(); // Load data specific to the adopter
+                    return "AdopterDashboard?faces-redirect=true"; // Redirect to adopter dashboard
+                default:
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "Invalid role specified", null));
+                    reset();
+                    return "Login";
+            }
+        }
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Invalid login credentials", null));
+        reset();
+        return "Login";
+    }
+
+    public String logout() {
+        invalidateSession();
+        reset();
+        return "Login?faces-redirect=true";
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -32,24 +96,22 @@ public class LoginBean {
         this.password = password;
     }
 
-    public boolean isLoggedIn() {
-        return loggedIn;
-    }
-
-
-    // Login method
-    public String login() {
-        if (validUsername.equals(username) && validPassword.equals(password)) {
-            loggedIn = true;
-            return "home?faces-redirect=true"; // Redirect to the home page if login is successful
-        } else {
-            loggedIn = false;
-            return null; // Stay on the login page
+    public static HttpSession getSession(boolean create) {
+        var facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null) {
+            return null;
         }
+        var externalContext = facesContext.getExternalContext();
+        if (externalContext == null) {
+            return null;
+        }
+        return (HttpSession) externalContext.getSession(create);
     }
-    // Logout method to clear session
-    public String logout() {
-        loggedIn = false;
-        return "login?faces-redirect=true"; // Redirect back to login page
+
+    public static void invalidateSession() {
+        var session = getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
     }
 }

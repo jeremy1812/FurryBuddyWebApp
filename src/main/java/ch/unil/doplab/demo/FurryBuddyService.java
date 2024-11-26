@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class FurryBuddyService {
@@ -52,5 +53,16 @@ public class FurryBuddyService {
                 .request()
                 .get(PetOwner.class);
         return petowner;
+    }
+    public String authenticate(String username, String password, String role) {
+        // Example logic for authentication
+        if ("petowner".equals(role)) {
+            // Verify username/password for petowner
+            return "petowner-uuid"; // Mock UUID
+        } else if ("adopter".equals(role)) {
+            // Verify username/password for adopter
+            return "adopter-uuid"; // Mock UUID
+        }
+        return null;
     }
 }

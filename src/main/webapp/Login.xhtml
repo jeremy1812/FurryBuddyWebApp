@@ -5,22 +5,64 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <f:view>
     <h:head>
+        <h:outputStylesheet name="css/styles.css"/>
         <title>Login</title>
     </h:head>
     <h:body>
-        <h1>Login Page</h1>
-        <h:form>
-            <p:panel header="User Login">
-                <p:messages autoUpdate="true" />
-                <p:outputLabel for="username" value="Username" />
-                <p:inputText id="username" value="#{loginBean.username}" />
-
-                <p:outputLabel for="password" value="Password" />
-                <p:password id="password" value="#{loginBean.password}" />
-
-                <p:commandButton value="Login" action="#{loginBean.login}" icon="pi pi-sign-in" />
+        <div align="center">
+            <p:panel style="width: 600px;">
+                <h:graphicImage width="180" value="/images/logo.png"/>
+                <br/>
+                <h1>Login Page</h1>
             </p:panel>
-        </h:form>
+
+            <p:panel style="width: 600px;">
+                <h:form id="loginForm">
+                    <table>
+                        <tr>
+                            <td style="text-align:right">
+                                <p:outputLabel value="Username"/>
+                            </td>
+                            <td style="text-align:left">
+                                <p:inputText id="username" value="#{loginBean.username}"
+                                             style="width: 300px" autocomplete="new-username"
+                                             requiered="true" requiredMessage="You must put a username.">
+                                    <p:ajax event="blur" update="username"/>
+                                </p:inputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right">
+                                <p:outputLabel value="Password"/>
+                            </td>
+                            <td style="text-align:left">
+                                <p:password id="password" value="#{loginBean.password}"
+                                            style="width: 300px" autocomplete="new-password"
+                                            redisplay="true" toggleMask="true" feedback="false"
+                                            required="true" requiredMessage="You must put a Password.">
+                                    <p:ajax event="blur" update="password"/>
+                                </p:password>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center; height:50px">
+                                <p:commandButton id="loginButton" value="Login" action="#{loginBean.login}"
+                                                 oncomplete="#{loginBean.reset()}" update="growl"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <p:growl id="growl" showDetail="false"/>
+                </h:form>
+            </p:panel>
+        </div>
+        <div align="center">
+            <p:panel style="width: 600px;">
+               <div align="left">
+                   <h:outputText value="Don't have an account yet? "/>
+                   <p:link value="Register right now!" outcome="Register.xhtml"/>
+               </div>
+            </p:panel>
+        </div>
     </h:body>
 </f:view>
 </html>
