@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<f:view>
+<h:head>
+    <title>New Advertisement</title>
+</h:head>
+
+<h:body>
+    <f:event type="preRenderView" listener="#{advertisementBean.loadAddAdvertisementPage()}" />
+    <h:messages/>
+
+    <div class="container">
+
+        <h:form style="width: 80%; margin: 0 auto;">
+            <div class="card">
+                <h5>Pet Information</h5>
+                <div class="grid ui-fluid">
+                    <!-- Pet Name -->
+                    <div class="col-12 md:col-6">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="name" value="#{advertisementBean.petName}" placeholder="Pet Name"/>
+                        </div>
+                    </div>
+
+                    <!-- Species -->
+                    <div class="col-12 md:col-6">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="species" value="#{advertisementBean.species}" placeholder="Species"/>
+                        </div>
+                    </div>
+
+                    <!-- Breed -->
+                    <div class="col-12 md:col-6">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="breed" value="#{advertisementBean.breed}" placeholder="Breed"/>
+                        </div>
+                    </div>
+
+                    <!-- Age -->
+                    <div class="col-12 md:col-6">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="age" value="#{advertisementBean.age}" type="number" placeholder="Age (years)"/>
+                        </div>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-12 md:col-6">
+                        <div class="ui-inputgroup">
+                            <p:selectOneMenu id="gender" value="#{advertisementBean.gender}">
+                                <f:selectItem itemLabel="Select Gender" itemValue="" />
+                                <f:selectItem itemLabel="Male" itemValue="MALE" />
+                                <f:selectItem itemLabel="Female" itemValue="FEMALE" />
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <!-- Neuteured -->
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:selectBooleanCheckbox id="neutered" value="#{advertisementBean.isNeutered()}" />
+                            <p:outputLabel for="neutered" value="Neutered" />
+                        </div>
+                    </div>
+
+                    <!-- Vaccinated -->
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:selectBooleanCheckbox id="vaccinated" value="#{advertisementBean.isVaccinated()}" />
+                            <p:outputLabel for="vaccinated" value="Is vaccinated" />
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="col-12 md:col-6">
+                        <div class="ui-inputgroup">
+                            <div class="ui-inputgroup-addon">CHF</div>
+                            <p:inputText id="price" value="#{advertisementBean.price}" type="number" placeholder="Price"/>
+                            <div class="ui-inputgroup-addon">.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5>Location Information</h5>
+                <div class="grid ui-fluid">
+                    <!-- Town -->
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="town" value="#{advertisementBean.town}" placeholder="Town"/>
+                        </div>
+                    </div>
+
+                    <!-- Postal Code -->
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="postalCode" value="#{advertisementBean.postalCode}" placeholder="Postal Code"/>
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="address" value="#{advertisementBean.address}" placeholder="Address"/>
+                        </div>
+                    </div>
+                </div>
+
+                <h5>Compatibility</h5>
+                <div class="grid ui-fluid">
+                    <!-- Compatible with Kids -->
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:selectBooleanCheckbox id="compatibleWithKids" value="#{advertisementBean.isCompatibleWithKids()}" />
+                            <p:outputLabel for="compatibleWithKids" value="Compatible with Kids" />
+                        </div>
+                    </div>
+
+                    <!-- Compatible with Families -->
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:selectBooleanCheckbox id="compatibleWithFamilies" value="#{advertisementBean.isCompatibleWithFamilies()}" />
+                            <p:outputLabel for="compatibleWithFamilies" value="Compatible with Families" />
+                        </div>
+                    </div>
+
+                    <!-- Compatible with Other Animals -->
+                    <div class="col-12 md:col-4">
+                        <div class="ui-inputgroup">
+                            <p:selectBooleanCheckbox id="compatibleWithOtherAnimals" value="#{advertisementBean.isCompatibleWithOtherAnimals()}" />
+                            <p:outputLabel for="compatibleWithOtherAnimals" value="Compatible with Other Animals" />
+                        </div>
+                    </div>
+                </div>
+
+                <h5>Image Upload</h5>
+                <div class="grid ui-fluid">
+                    <div class="col-12">
+                        <div class="ui-inputgroup">
+                            <p:fileUpload value="#{advertisementBean.image}" mode="simple" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid ui-fluid">
+                    <div class="col-12">
+                        <p:commandButton value="Post" action="#{advertisementBean.addAdvertisement}" styleClass="ui-button-success" style="width: 50%"/>
+                        <p:commandButton value="Cancel" onclick="window.location.href='getAllAdvertisements.xhtml';" styleClass="ui-button-danger" style="margin-left: 10px;"/>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+    </div>
+</h:body>
+</f:view>
+</html>
