@@ -15,6 +15,8 @@
     <!-- Menu spécifique pour les Adopters -->
     <ui:define name="menu">
         <h:link outcome="GetAllAdvertisements" value="Advertisements" />
+        <h:link outcome="AddAdoptionRequest" value="New Adoption Request" />
+        <h:link outcome="MyRequest" value="My Requests" />
         <h:link outcome="AdopterProfile" value="Profile" />
         <p:commandLink value="Logout" action="#{loginBean.logout}" process="@this" />
     </ui:define>

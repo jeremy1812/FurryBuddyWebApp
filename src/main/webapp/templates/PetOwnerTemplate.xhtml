@@ -14,7 +14,9 @@
 
     <!-- Menu spécifique pour les Pet Owners -->
     <ui:define name="menu">
-        <h:link outcome="GetAdvertisements" value="My Advertisements" />
+        <h:link outcome="MyAdvertisement" value="My Advertisements" />
+        <h:link outcome="AddAdvertisement" value="New Advertisement" />
+        <h:link outcome="RequestReceived" value="View my requests" />
         <h:link outcome="PetOwnerProfile" value="Profile" />
         <p:commandLink value="Logout" action="#{loginBean.logout}" process="@this" />
     </ui:define>

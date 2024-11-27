@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="templates/AdopterTemplate.xhtml">
+
+    <!-- Définition du titre de la page -->
+    <ui:define name="title">FurryBuddy - My Adoption Requests</ui:define>
+    <ui:define name="section-title">My Adoption Requests</ui:define>
+
+    <!-- Contenu principal -->
+    <ui:define name="section-content">
+        <f:event type="preRenderView" listener="#{adoptionRequestBean.loadRequestsForAdopter()}" />
+
+        <!-- Tableau des demandes d'adoption -->
+        <p:dataTable id="myRequests" value="#{adoptionRequestBean.requests}" var="request">
+            <p:column headerText="Advertisement Title">
+                <h:outputText value="#{request.advertisement.title}" />
+            </p:column>
+            <p:column headerText="Pet Owner Name">
+                <h:outputText value="#{request.advertisement.petOwner.name}" />
+            </p:column>
+            <p:column headerText="Status">
+                <h:outputText value="#{request.status}" />
+            </p:column>
+        </p:dataTable>
+
+        <!-- Message en cas d'absence de requêtes -->
+        <h:outputText value="You have not submitted any adoption requests yet."
+                      rendered="#{empty adoptionRequestBean.requests}" />
+    </ui:define>
+
+</ui:composition>
+
+</html>

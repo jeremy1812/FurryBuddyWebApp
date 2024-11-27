@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="templates/PetOwnerTemplate.xhtml">
+
+    <!-- Titre et contenu dynamiques -->
+    <ui:define name="title">My Advertisements</ui:define>
+    <ui:define name="section-title">Your Advertisements</ui:define>
+
+    <ui:define name="section-content">
+        <f:event type="preRenderView" listener="#{advertisementBean.loadAllAdvertisements()}"/>
+
+        <!-- Tableau des annonces -->
+        <p:dataTable id="advertisements" value="#{advertisementBean.allAdvertisements}" var="advertisement">
+            <p:column headerText="Title">
+                <h:outputText value="#{advertisement.title}" />
+            </p:column>
+            <p:column headerText="Description">
+                <h:outputText value="#{advertisement.description}" />
+            </p:column>
+            <p:column headerText="Price">
+                <h:outputText value="#{advertisement.price}" />
+            </p:column>
+            <p:column headerText="Status">
+                <h:outputText value="#{advertisement.status}" />
+            </p:column>
+            <p:column headerText="Actions">
+                <h:form>
+                    <p:commandButton value="Edit" action="#{advertisementBean.viewDetails(advertisement)}" />
+                    <p:commandButton value="Delete" actionListener="#{advertisementBean.deleteAdvertisement()}" update="advertisements" />
+                </h:form>
+            </p:column>
+        </p:dataTable>
+    </ui:define>
+
+</ui:composition>
+
+</html>
