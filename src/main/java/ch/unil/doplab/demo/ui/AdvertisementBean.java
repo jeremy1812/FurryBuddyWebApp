@@ -304,7 +304,7 @@ public class AdvertisementBean extends Advertisement implements Serializable {
             // Create Pet object
             Pet pet = new Pet(UUID.randomUUID(), petName, species, breed, neutered, gender, description, personality, color,
                     compatibleWithInexperiencedOwners, compatibleWithKids, compatibleWithFamilies, compatibleWithOtherAnimals,
-                    age, price, Pet.Status.AVAILABLE, suitableForHouse, vaccinated, medicalConditions);
+                    age, price, suitableForHouse, vaccinated, medicalConditions);
 
             // Create Location object
             Location location = new Location(town, postalCode, address);
