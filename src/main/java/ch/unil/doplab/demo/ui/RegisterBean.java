@@ -1,8 +1,10 @@
 package ch.unil.doplab.demo.ui;
 
 import ch.unil.doplab.demo.FurryBuddyService;
-import ch.unil.furrybuddy.domain.PetOwner;
 import ch.unil.furrybuddy.domain.Adopter;
+import ch.unil.furrybuddy.domain.PetOwner;
+import ch.unil.furrybuddy.domain.Location;
+import ch.unil.furrybuddy.domain.User.Role;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -10,7 +12,9 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.UUID;
 import java.util.logging.Logger;
+
 
 @Named
 @SessionScoped
@@ -23,7 +27,10 @@ public class RegisterBean implements Serializable {
     private String email;
     private String username;
     private String password;
-    private String role;
+    private Role role;
+    private String locationTown; // Assuming location requires a city
+    private String locationPostalCode; //New field for location input
+    private String locationAddress;
     private String petBiography;
 
     private boolean petOwnerSelected;
@@ -44,6 +51,9 @@ public class RegisterBean implements Serializable {
         username = null;
         password = null;
         role = null;
+        locationTown = null;
+        locationPostalCode = null; //Reset location PostalCode
+        locationAddress = null;
         petBiography = "Write your pet's biography here...";
         petOwnerSelected = false;
         adopterSelected = false;
@@ -53,16 +63,56 @@ public class RegisterBean implements Serializable {
      * Handles the registration process.
      * Validates the role and attempts to register the user as a PetOwner or Adopter.
      */
+    Location location = new Location(locationTown, locationPostalCode, locationAddress);
     public String register() {
         // Invalidate any existing session
-        LoginBean.invalidateSession();
+        LoginBean.invalidateSession(); // Clear session before registering
         String hashedPassword = hashPassword(password); // Hash the password before storing
         String errorMessage = null;
 
+        try {
+            if ("PetOwner".equals(role)) {
+                // Register as a PetOwner
+                PetOwner petOwner = new PetOwner(
+                        email,
+                        hashedPassword,
+                        firstName,
+                        lastName,
+                        location,
+                        Role.PET_OWNER
+                );
+
+                theService.addPetOwner(petOwner); // Call FurryBuddyService to add PetOwner
+                log.info("PetOwner successfully registered: " + petOwner);
+                return "Login?faces-redirect=true"; // Redirect to login page
+            } else if ("Adopter".equals(role)) {
+                // Register as an Adopter
+                Adopter adopter = new Adopter(
+                        email,
+                        hashedPassword,
+                        firstName,
+                        lastName,
+                        location,
+                        Role.ADOPTER
+                );
+
+                theService.addAdopter(adopter); // Call FurryBuddyService to add Adopter
+                log.info("Adopter successfully registered: " + adopter);
+                return "Login?faces-redirect=true"; // Redirect to login page
+            } else {
+                throw new IllegalArgumentException("Invalid role: " + role);
+            }
+        } catch (Exception e) {
+            errorMessage = e.getMessage();
+            log.warning("Registration failed: " + errorMessage);
+        }
+
+
+
         // Check the role and register the appropriate user type
         switch (role) {
-            case "petowner":
-                PetOwner petOwner = new PetOwner(firstName, lastName, email, username, hashedPassword, petBiography);
+            case PET_OWNER:
+                PetOwner petOwner = new PetOwner(email, password, firstName, lastName, location, role);
                 try {
                     petOwner = theService.addPetOwner(petOwner);
                     log.info("PetOwner successfully registered: " + petOwner);
@@ -72,10 +122,10 @@ public class RegisterBean implements Serializable {
                     log.warning("Failed to register new PetOwner " + username + ": " + errorMessage);
                 }
                 break;
-            case "adopter":
-                Adopter adopter = new Adopter(firstName, lastName, email, username, hashedPassword);
+            case ADOPTER:
+                Adopter adopter = new Adopter(email, password, firstName, lastName, location, role);
                 try {
-                    adopter = theService.addAdopter(adopter);
+                    adopter = theService.addAdopter(adopter); //Call service to add Adopter
                     log.info("Adopter successfully registered: " + adopter);
                     return "Login?faces-redirect=true";
                 } catch (Exception e) {
@@ -99,8 +149,8 @@ public class RegisterBean implements Serializable {
      * Updates conditional rendering for biography field based on the selected role.
      */
     public void updateRoleSelection() {
-        this.petOwnerSelected = "petowner".equals(role);
-        this.adopterSelected = "adopter".equals(role);
+        this.petOwnerSelected = "PetOwner".equals(role); // Adjusted role string comparison
+        this.adopterSelected = "Adopter".equals(role); // Adjusted role string comparison
     }
 
     // Getters and Setters
@@ -144,11 +194,11 @@ public class RegisterBean implements Serializable {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
         updateRoleSelection(); // Update the conditional fields whenever the role changes
     }

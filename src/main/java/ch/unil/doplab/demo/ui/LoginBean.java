@@ -35,7 +35,7 @@ public class LoginBean implements Serializable {
         role = null;
     }
 
-    public String login() {
+    /* public String login() {
         var uuid = furryBuddyService.authenticate(username, password, role); // Authenticate user
         var session = getSession(true);
         if (uuid != null) {
@@ -65,7 +65,7 @@ public class LoginBean implements Serializable {
         reset();
         return "Login";
     }
-
+*/
     public String logout() {
         invalidateSession();
         reset();

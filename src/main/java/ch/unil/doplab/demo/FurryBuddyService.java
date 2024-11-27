@@ -1,5 +1,6 @@
 package ch.unil.doplab.demo;
 
+import ch.unil.furrybuddy.domain.Adopter;
 import ch.unil.furrybuddy.domain.Advertisement;
 import ch.unil.furrybuddy.domain.ExceptionDescription;
 import ch.unil.furrybuddy.domain.PetOwner;
@@ -58,6 +59,46 @@ public class FurryBuddyService {
                 .request()
                 .get(PetOwner.class);
         return petowner;
+    }
+    public PetOwner addPetOwner(PetOwner petOwner) throws Exception {
+        petOwner.setUserID(null);  // Ensure ID is not set to avoid server-side UUID errors
+        Response response = petOwnerTarget
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(petOwner, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() == 200 && response.hasEntity()) {
+            return response.readEntity(PetOwner.class);
+        } else {
+            ExceptionDescription description = response.readEntity(ExceptionDescription.class);
+            try {
+                Class<?> exceptionClass = Class.forName(description.getType());
+                Constructor<?> constructor = exceptionClass.getConstructor(String.class);
+                Exception exception = (Exception) constructor.newInstance(description.getMessage());
+                throw exception;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    public Adopter addAdopter(Adopter adopter) throws Exception {
+        adopter.setUserID(null);  // Ensure ID is not set to avoid server-side UUID errors
+        Response response = adopterTarget
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(adopter, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() == 200 && response.hasEntity()) {
+            return response.readEntity(Adopter.class);
+        } else {
+            ExceptionDescription description = response.readEntity(ExceptionDescription.class);
+            try {
+                Class<?> exceptionClass = Class.forName(description.getType());
+                Constructor<?> constructor = exceptionClass.getConstructor(String.class);
+                Exception exception = (Exception) constructor.newInstance(description.getMessage());
+                throw exception;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /*
@@ -132,6 +173,4 @@ public class FurryBuddyService {
                 .delete();
         return response.getStatus() == 200;
     }
-
-
 }
