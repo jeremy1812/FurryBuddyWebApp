@@ -1,8 +1,15 @@
 package ch.unil.doplab.demo.ui;
 
+import ch.unil.furrybuddy.domain.AdoptionRequest;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class AdoptionRequestBean {implements Serializable {
+@SessionScoped
+@Named
+public class AdoptionRequestBean extends AdoptionRequest implements Serializable {
     private String uuid;
     private String name;
     private List<String> adoptionApplications;
@@ -25,25 +32,5 @@ public class AdoptionRequestBean {implements Serializable {
     // Getter and Setter for other fields as needed
 }
 
-}
 
-// s'assurer que le bean contient une propriété pour la valeur de l'aire de texte :
-@ManagedBean
-@RequestScoped
-public class Bean {
-    private String comments;
 
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public String submit() {
-        // Logique lors de l'envoi
-        System.out.println("Commentaires soumis : " + comments);
-        return null; // ou une navigation
-    }
-}
