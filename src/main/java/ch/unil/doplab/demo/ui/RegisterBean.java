@@ -11,6 +11,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 @Named
 @SessionScoped
 public class RegisterBean implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(RegisterBean.class.getName());
 
@@ -70,7 +72,7 @@ public class RegisterBean implements Serializable {
         String hashedPassword = hashPassword(password); // Hash the password before storing
         String errorMessage = null;
 
-        try {
+        /* try {
             if ("PetOwner".equals(role)) {
                 // Register as a PetOwner
                 PetOwner petOwner = new PetOwner(
@@ -106,6 +108,8 @@ public class RegisterBean implements Serializable {
             errorMessage = e.getMessage();
             log.warning("Registration failed: " + errorMessage);
         }
+
+         */
 
 
 
@@ -149,8 +153,8 @@ public class RegisterBean implements Serializable {
      * Updates conditional rendering for biography field based on the selected role.
      */
     public void updateRoleSelection() {
-        this.petOwnerSelected = "PetOwner".equals(role); // Adjusted role string comparison
-        this.adopterSelected = "Adopter".equals(role); // Adjusted role string comparison
+        this.petOwnerSelected = Role.PET_OWNER.equals(role);
+        this.adopterSelected = Role.ADOPTER.equals(role);
     }
 
     // Getters and Setters
