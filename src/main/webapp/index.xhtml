@@ -12,24 +12,26 @@
     <div class="container">
         <!-- Buttons for Login and Register -->
         <div class="buttons">
-            <p:panel style="width: 600px;">
-                <h:graphicImage width="280" value="/images/logo.png"/>
+            <p:panel>
+                <h:graphicImage width="250" value="/images/logo.png"/>
                 <br/>
                 <h1>Welcome to FurryBuddy</h1>
                 <h3>Your companion awaits</h3>
             </p:panel>
 
-            <p:panel style="width: 600px;">
+            <p:panel>
                 <h:form id="buttonsForm">
                     <h:outputText value="Choose an option:" style="font-weight:bold; font-size:18px"/>
                     <br/>
                     <br/>
                     <!-- Link Styled As Button -->
-                    <h:link value="Log In" outcome="Login.xhtml" styleClass="button-style"/>
+                    <p:commandButton value="Log In" onclick="window.location.href='Login.xhtml'"/>
+<!--                    <h:link value="Log In" outcome="Login.xhtml" styleClass="button-style"/>-->
                     <br/>
                     <br/>
                     <!-- Link Styled As Button -->
-                    <h:link value="Sign Up" outcome="Register.xhtml" styleClass="button-style"/>
+                    <p:commandButton value="Sign Up" onclick="window.location.href='Register.xhtml'"/>
+<!--                    <h:link value="Sign Up" outcome="Register.xhtml" styleClass="button-style"/>-->
                 </h:form>
             </p:panel>
         </div>
