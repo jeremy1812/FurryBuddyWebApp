@@ -13,7 +13,7 @@
             <p:panel style="width: 600px;">
                 <h:graphicImage width="180" value="/images/logo.png"/>
                 <br/>
-                <h1>Login Page</h1>
+                <h1>Login</h1>
             </p:panel>
 
             <p:panel style="width: 600px;">
@@ -21,13 +21,13 @@
                     <table>
                         <tr>
                             <td style="text-align:right">
-                                <p:outputLabel value="Username"/>
+                                <p:outputLabel value="Email"/>
                             </td>
                             <td style="text-align:left">
-                                <p:inputText id="username" value="#{loginBean.username}"
-                                             style="width: 300px" autocomplete="new-username"
-                                             requiered="true" requiredMessage="You must put a username.">
-                                    <p:ajax event="blur" update="username"/>
+                                <p:inputText id="email" value="#{loginBean.email}"
+                                             style="width: 300px" autocomplete="new-email"
+                                             required="true" requiredMessage="Email is required.">
+                                    <p:ajax event="blur" update="email"/>
                                 </p:inputText>
                             </td>
                         </tr>
@@ -39,9 +39,20 @@
                                 <p:password id="password" value="#{loginBean.password}"
                                             style="width: 300px" autocomplete="new-password"
                                             redisplay="true" toggleMask="true" feedback="false"
-                                            required="true" requiredMessage="You must put a Password.">
+                                            required="true" requiredMessage="Password is required.">
                                     <p:ajax event="blur" update="password"/>
                                 </p:password>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style="text-align:center">
+                                <p:selectOneRadio id="selectUserRole" value="#{loginBean.role}"
+                                                  required="true"
+                                                  requiredMessage="You must login as student or as teacher.">
+                                    <f:selectItem itemLabel="Adopter" itemValue="adopter"/>
+                                    <f:selectItem itemLabel="Pet Owner" itemValue="petOwner"/>
+                                </p:selectOneRadio>
                             </td>
                         </tr>
                         <tr>
@@ -57,10 +68,10 @@
         </div>
         <div align="center">
             <p:panel style="width: 600px;">
-               <div align="left">
-                   <h:outputText value="Don't have an account yet? "/>
-                   <p:link value="Register right now!" outcome="Register.xhtml"/>
-               </div>
+                <div align="left">
+                    <h:outputText value="Don't have an account? "/>
+                    <p:link value="Sign Up Now" outcome="Register.xhtml"/>
+                </div>
             </p:panel>
         </div>
     </h:body>

@@ -1,12 +1,16 @@
 package ch.unil.doplab.demo.ui;
 
+import ch.unil.furrybuddy.domain.Adopter;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
+@SessionScoped
 @Named
-public class AdopterBean implements Serializable {
-    private String uuid;
+public class AdopterBean extends Adopter implements Serializable {
+    private UUID uuid;
     private String name;
     private List<String> adoptionApplications;
 
@@ -17,11 +21,11 @@ public class AdopterBean implements Serializable {
     }
 
     // Getter and Setter for UUID
-    public String getUUID() {
+    public UUID getUUID() {
         return uuid;
     }
 
-    public void setUUID(String uuid) {
+    public void setUUID(UUID uuid) {
         this.uuid = uuid;
     }
 

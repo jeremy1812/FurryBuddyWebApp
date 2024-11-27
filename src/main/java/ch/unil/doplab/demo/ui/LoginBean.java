@@ -1,18 +1,21 @@
 package ch.unil.doplab.demo.ui;
 
 import ch.unil.doplab.demo.FurryBuddyService;
-import ch.unil.doplab.demo.ui.AdopterBean;
-import ch.unil.doplab.demo.ui.PetOwnerBean;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
 import java.io.Serializable;
+import java.util.UUID;
 
+@SessionScoped
+@Named
 public class LoginBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String username;
+    private String email;
     private String password;
     private String role; // petowner or adopter
 
@@ -30,27 +33,27 @@ public class LoginBean implements Serializable {
     }
 
     public void reset() {
-        username = null;
+        email = null;
         password = null;
         role = null;
     }
 
-    /* public String login() {
-        var uuid = furryBuddyService.authenticate(username, password, role); // Authenticate user
+     public String login() {
+        var uuid = furryBuddyService.authenticate(email, password, role); // Authenticate user
         var session = getSession(true);
         if (uuid != null) {
             session.setAttribute("uuid", uuid);
-            session.setAttribute("username", username);
+            session.setAttribute("email", email);
             session.setAttribute("role", role);
-            switch (role.toLowerCase()) {
-                case "petowner":
+            switch (role) {
+                case "petOwner":
                     petOwnerBean.setUUID(uuid);
                     petOwnerBean.loadPetOwnerData(); // Load data specific to the pet owner
-                    return "PetOwnerDashboard?faces-redirect=true"; // Redirect to pet owner dashboard
+                    return "GetAllAdvertisements?faces-redirect=true"; // Redirect to pet owner dashboard
                 case "adopter":
                     adopterBean.setUUID(uuid);
                     adopterBean.loadAdopterData(); // Load data specific to the adopter
-                    return "AdopterDashboard?faces-redirect=true"; // Redirect to adopter dashboard
+                    return "GetAllAdvertisements?faces-redirect=true"; // Redirect to adopter dashboard
                 default:
                     FacesContext.getCurrentInstance().addMessage(null,
                             new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -65,7 +68,7 @@ public class LoginBean implements Serializable {
         reset();
         return "Login";
     }
-*/
+
     public String logout() {
         invalidateSession();
         reset();
@@ -80,12 +83,12 @@ public class LoginBean implements Serializable {
         this.role = role;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

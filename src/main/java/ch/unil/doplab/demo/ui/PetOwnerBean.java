@@ -1,11 +1,15 @@
 package ch.unil.doplab.demo.ui;
+import ch.unil.furrybuddy.domain.PetOwner;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
+@SessionScoped
 @Named
-public class PetOwnerBean implements Serializable {
-    private String uuid;
+public class PetOwnerBean extends PetOwner implements Serializable {
+    private UUID uuid;
     private String name;
     private List<String> pets;
 
@@ -16,11 +20,11 @@ public class PetOwnerBean implements Serializable {
     }
 
     // Getter and Setter for UUID
-    public String getUUID() {
+    public UUID getUUID() {
         return uuid;
     }
 
-    public void setUUID(String uuid) {
+    public void setUUID(UUID uuid) {
         this.uuid = uuid;
     }
 
