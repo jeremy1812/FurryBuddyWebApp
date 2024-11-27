@@ -2,7 +2,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:util="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
+
 <h:head>
     <h:outputStylesheet name="css/styles.css"/>
     <title>
@@ -24,12 +26,13 @@
                             <p:outputLabel value="Role"/>
                         </td>
                         <td style="text-align:center">
-                            <p:selectOneRadio id="selectUserRole" value="#{registerBean.role}"
-                                              required="true"
-                                              requiredMessage="You must register as student or as teacher.">
-                                <f:selectItem itemLabel="PetOwner" itemValue="#{userData.Petowner}"/>
-                                <f:selectItem itemLabel="Adopter" itemValue="#{userData.Adopter}"/>
-                                <p:ajax update="@form" />
+                            <!-- Updated selectOneRadio for ENUM Role -->
+                            <p:selectOneRadio id="selectUserRole" value="#{registerBean.role}" required="true"
+                                              requiredMessage="You must register as PetOwner or Adopter.">
+                                itemLabel="Select Role" itemValue="
+                                <f:selectItem itemLabel="PetOwner" itemValue="#{registerBean.role.PET_OWNER}"/>
+                                <f:selectItem itemLabel="Adopter" itemValue="#{registerBean.role.ADOPTER}"/>
+                                <p:ajax event="change" listener="#{registerBean.updateRoleSelection}" update="biographyBlock" />
                             </p:selectOneRadio>
                         </td>
                     </tr>
@@ -94,23 +97,30 @@
                     </tr>
                 </table>
                 <div align="left">
-                    <p:outputLabel value="Biography of the pet" rendered="#{registerBean.PetOwnerSelected}"/><br/>
-                    <p:inputTextarea id="biography" value="#{registerBean.PetBiography}"
-                                     rendered="#{registerBean.PetOwnerSelected}" style="margin-top: 5px"
-                                     required="#{registerBean.PetOwnerSelected}"
-                                     requiredMessage="Biography is required."
-                                     rows="5" cols="58" maxlength="200"
-                                     counter="charCounter"
-                                     counterTemplate="{0} characters remaining.">
-                        <p:ajax update="biography" />
+                    <!-- Biography field, displayed for PetOwner only -->
+                    <h:panelGroup id="biographyBlock">
+                        <p:outputLabel value="Biography of the pet" rendered="#{registerBean.role == 'PET_OWNER'}"/>
+                        <p:inputTextarea id="biography" value="#{registerBean.petBiography}"
+                                         rendered="#{registerBean.role == registerBean.role.PET_OWNER}"
+                                         style="margin-top: 5px"
+                                         required="#{registerBean.role == registerBean.role.PET_OWNER}"
+                                         requiredMessage="Biography is required."
+                                         rows="5" cols="58" maxlength="200"
+                                         counter="charCounter"
+                                         counterTemplate="{0} characters remaining.">
+                            <p:ajax update="biography charCounter" />
                     </p:inputTextarea>
-                    <h:outputText id="charCounter" style="font-size: 10px;"/>
+                        <h:outputText id="charCounter" style="font-size: 10px;"/>
+                    </h:panelGroup>
                 </div>
 
-                <br/> <p:spacer height="30"/>
-                <p:commandButton id="registerButton" value="Register"  action="#{registerBean.register}"
+                <br/>
+                <p:spacer height="30"/>
+                <!-- Register button -->
+                <p:commandButton id="registerButton" value="Register" action="#{registerBean.register}"
                                  update="growl"/>
-                <br/><p:spacer height="10"/>
+                <br/>
+                <p:spacer height="10"/>
                 <p:growl id="growl" showDetail="false"/>
             </h:form>
         </p:panel>
@@ -124,5 +134,4 @@
         </p:panel>
     </div>
 </h:body>
-
 </html>

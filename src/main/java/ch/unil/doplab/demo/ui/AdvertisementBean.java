@@ -140,6 +140,7 @@ public class AdvertisementBean implements Serializable {
             dialogMessage = e.getMessage();
             PrimeFaces.current().executeScript("PF('updateErrorDialog').show();");
         }
+
     }
 
     // Method to Delete Advertisement
