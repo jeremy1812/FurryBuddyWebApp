@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @SessionScoped
 @Named
-public class AdvertisementBean implements Serializable {
+public class AdvertisementBean extends Advertisement implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // Advertisement Fields
@@ -124,7 +124,7 @@ public class AdvertisementBean implements Serializable {
             theAdvertisement = new Advertisement(
                     UUID.randomUUID(),
                     pet,
-                    UUID.randomUUID(), // Placeholder for pet owner ID
+                    UUID.randomUUID(), // Placeholder for pet owner ID TODO
                     pet.getDescription(),
                     location,
                     Advertisement.Status.AVAILABLE

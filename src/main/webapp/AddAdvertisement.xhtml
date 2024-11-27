@@ -6,129 +6,119 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:head>
-        <title>Add New Advertisement</title>
-    </h:head>
-    <h:body>
-        <f:event type="preRenderView" listener="#{advertisementBean.loadAddAdvertisementPage}" />
-        <h:messages globalOnly="true" style="color: red; margin-bottom: 15px;" />
 
-        <div class="container" style="max-width: 800px; margin: 0 auto; padding: 20px;">
+<ui:composition template="templates/PetOwnerTemplate.xhtml">
 
-            <h:form id="addAdvertisementForm">
-                <div class="card">
-                    <h2>Add New Advertisement</h2>
-                    <p>Fill in the details below to create a new advertisement.</p>
+    <ui:define name="title">PetOwner | Profile</ui:define>
 
-                    <!-- Pet Information Section -->
-                    <h3>Pet Information</h3>
-                    <div class="grid ui-fluid">
-                        <div class="col-12 md:col-6">
-                            <p:outputLabel for="name" value="Pet Name" />
-                            <p:inputText id="name" value="#{advertisementBean.pet.name}" placeholder="Enter pet name" required="true" requiredMessage="Pet name is required." />
-                            <p:message for="name" />
-                        </div>
+<!--    TODO petowner name from PetOwnerBean-->
+    <ui:define name="section-title"> Your Profile</ui:define>
 
-                        <div class="col-12 md:col-6">
-                            <p:outputLabel for="species" value="Species" />
-                            <p:inputText id="species" value="#{advertisementBean.pet.species}" placeholder="Enter species" />
-                        </div>
+    <ui:define name="section-content">
+        <p:outputLabel for="@next" value="Pet Information" style="font-size: 14px; font-weight: bold;" />
+        <h:form id="addAdvertisementForm">
+            <!-- Pet Name -->
+            <p:outputLabel for="@next" value="Pet Name" style="font-size: 12px;" />
+            <br/>
+            <p:inputText id="name" value="#{advertisementBean.pet.name}" required="true"
+                         requiredMessage="Pet name is required.">
+                <p:ajax event="blur" update="addAdvertisementForm" />
+            </p:inputText>
+            <p:message for="name" display="text" />
+            <br/>
 
-                        <div class="col-12 md:col-6">
-                            <p:outputLabel for="breed" value="Breed" />
-                            <p:inputText id="breed" value="#{advertisementBean.pet.breed}" placeholder="Enter breed" />
-                        </div>
+            <!-- Species -->
+            <p:outputLabel for="@next" value="Species" style="font-size: 12px;" /><br/>
+            <p:inputText id="species" value="#{advertisementBean.pet.species}" />
+            <br/>
 
-                        <div class="col-12 md:col-6">
-                            <p:outputLabel for="age" value="Age (Years)" />
-                            <p:inputText id="age" value="#{advertisementBean.pet.age}" type="number" placeholder="Enter age" />
-                        </div>
+            <!-- Breed -->
+            <p:outputLabel for="@next" value="Breed" style="font-size: 12px;" /><br/>
+            <p:inputText id="breed" value="#{advertisementBean.pet.breed}" />
+            <br/>
 
-                        <div class="col-12 md:col-6">
-                            <p:outputLabel for="gender" value="Gender" />
-                            <p:selectOneMenu id="gender" value="#{advertisementBean.pet.gender}">
-                                <f:selectItem itemLabel="Select Gender" itemValue="" />
-                                <f:selectItem itemLabel="Male" itemValue="MALE" />
-                                <f:selectItem itemLabel="Female" itemValue="FEMALE" />
-                            </p:selectOneMenu>
-                        </div>
+            <!-- Age -->
+            <p:outputLabel for="@next" value="Age (Years)" style="font-size: 12px;" /><br/>
+            <p:inputText id="age" value="#{advertisementBean.pet.age}" type="number" />
+            <br/>
 
-                        <div class="col-12 md:col-6">
-                            <p:outputLabel for="price" value="Price (CHF)" />
-                            <p:inputText id="price" value="#{advertisementBean.pet.price}" type="number" placeholder="Enter price" />
-                        </div>
+            <!-- Gender -->
+            <p:outputLabel for="@next" value="Gender" style="font-size: 12px;" /><br/>
+            <p:selectOneMenu id="gender" value="#{advertisementBean.pet.gender}">
+                <f:selectItem itemLabel="Select Gender" itemValue="" />
+                <f:selectItem itemLabel="Male" itemValue="MALE" />
+                <f:selectItem itemLabel="Female" itemValue="FEMALE" />
+            </p:selectOneMenu>
+            <br/>
 
-                        <div class="col-12 md:col-4">
-                            <p:outputLabel for="neutered" value="Neutered" />
-                            <p:selectBooleanCheckbox id="neutered" value="#{advertisementBean.pet.neutered}" />
-                        </div>
+            <!-- Price -->
+            <p:outputLabel for="@next" value="Price (CHF)" style="font-size: 12px;" /><br/>
+            <p:inputText id="price" value="#{advertisementBean.pet.price}" type="number" />
+            <br/>
 
-                        <div class="col-12 md:col-4">
-                            <p:outputLabel for="vaccinated" value="Vaccinated" />
-                            <p:selectBooleanCheckbox id="vaccinated" value="#{advertisementBean.pet.vaccinated}" />
-                        </div>
-                    </div>
+            <!-- Neutered -->
+            <p:outputLabel for="@next" value="Neutered" style="font-size: 12px;" /><br/>
+            <p:selectBooleanCheckbox id="neutered" value="#{advertisementBean.pet.neutered}" />
+            <br/>
 
-                    <!-- Location Information Section -->
-                    <h3>Location Information</h3>
-                    <div class="grid ui-fluid">
-                        <div class="col-12 md:col-4">
-                            <p:outputLabel for="town" value="Town" />
-                            <p:inputText id="town" value="#{advertisementBean.location.town}" placeholder="Enter town" required="true" requiredMessage="Town is required." />
-                            <p:message for="town" />
-                        </div>
+            <!-- Vaccinated -->
+            <p:outputLabel for="@next" value="Vaccinated" style="font-size: 12px;" /><br/>
+            <p:selectBooleanCheckbox id="vaccinated" value="#{advertisementBean.pet.vaccinated}" />
 
-                        <div class="col-12 md:col-4">
-                            <p:outputLabel for="postalCode" value="Postal Code" />
-                            <p:inputText id="postalCode" value="#{advertisementBean.location.postalCode}" placeholder="Enter postal code" />
-                        </div>
+            <p:separator />
 
-                        <div class="col-12 md:col-4">
-                            <p:outputLabel for="address" value="Address" />
-                            <p:inputText id="address" value="#{advertisementBean.location.address}" placeholder="Enter address" />
-                        </div>
-                    </div>
+            <!-- Location Information -->
+            <p:outputLabel for="@next" value="Location Information" style="font-size: 14px; font-weight: bold;" />
+            <br/>
 
-                    <!-- Compatibility Section -->
-                    <h3>Compatibility</h3>
-                    <div class="grid ui-fluid">
-                        <div class="col-12 md:col-4">
-                            <p:outputLabel for="compatibleWithKids" value="Compatible with Kids" />
-                            <p:selectBooleanCheckbox id="compatibleWithKids" value="#{advertisementBean.pet.compatibleWithKids}" />
-                        </div>
+            <!-- Town -->
+            <p:outputLabel for="@next" value="Town" style="font-size: 12px;" /><br/>
+            <p:inputText id="town" value="#{advertisementBean.location.town}" required="true"
+                         requiredMessage="Town is required.">
+                <p:ajax event="blur" update="addAdvertisementForm" />
+            </p:inputText>
+            <p:message for="town" display="text" />
+            <br/>
 
-                        <div class="col-12 md:col-4">
-                            <p:outputLabel for="compatibleWithFamilies" value="Compatible with Families" />
-                            <p:selectBooleanCheckbox id="compatibleWithFamilies" value="#{advertisementBean.pet.compatibleWithFamilies}" />
-                        </div>
+            <!-- Postal Code -->
+            <p:outputLabel for="@next" value="Postal Code" style="font-size: 12px;" /><br/>
+            <p:inputText id="postalCode" value="#{advertisementBean.location.postalCode}" />
+            <br/>
 
-                        <div class="col-12 md:col-4">
-                            <p:outputLabel for="compatibleWithOtherAnimals" value="Compatible with Other Animals" />
-                            <p:selectBooleanCheckbox id="compatibleWithOtherAnimals" value="#{advertisementBean.pet.compatibleWithOtherAnimals}" />
-                        </div>
-                    </div>
+            <!-- Address -->
+            <p:outputLabel for="@next" value="Address" style="font-size: 12px;" /><br/>
+            <p:inputText id="address" value="#{advertisementBean.location.address}" />
 
-                    <!-- Image Upload Section -->
-                    <h3>Image Upload</h3>
-                    <div class="grid ui-fluid">
-                        <div class="col-12">
-                            <p:outputLabel for="imageUpload" value="Upload an Image" />
-                            <p:fileUpload id="imageUpload" value="#{advertisementBean.image}" mode="simple" />
-                        </div>
-                    </div>
+            <p:separator />
 
-                    <!-- Submit and Cancel Buttons -->
-                    <div class="grid ui-fluid">
-                        <div class="col-12">
-                            <p:commandButton value="Post Advertisement" action="#{advertisementBean.addAdvertisement}" update=":addAdvertisementForm :messages" styleClass="ui-button-success" />
-                            <p:commandButton value="Cancel" onclick="window.location.href='getAllAdvertisements.xhtml';" styleClass="ui-button-danger" />
-                        </div>
-                    </div>
-                </div>
-            </h:form>
+            <!-- Compatibility -->
+            <p:outputLabel for="@next" value="Compatibility" style="font-size: 14px; font-weight: bold;" />
+            <br/>
 
-        </div>
-    </h:body>
-</f:view>
-</html>
+            <!-- Compatible with Kids -->
+            <p:outputLabel for="@next" value="Compatible with Kids" style="font-size: 12px;" /><br/>
+            <p:selectBooleanCheckbox id="compatibleWithKids" value="#{advertisementBean.pet.compatibleWithKids}" />
+            <br/>
+
+            <!-- Compatible with Families -->
+            <p:outputLabel for="@next" value="Compatible with Families" style="font-size: 12px;" /><br/>
+            <p:selectBooleanCheckbox id="compatibleWithFamilies" value="#{advertisementBean.pet.compatibleWithFamilies}" />
+            <br/>
+
+            <!-- Compatible with Other Animals -->
+            <p:outputLabel for="@next" value="Compatible with Other Animals" style="font-size: 12px;" /><br/>
+            <p:selectBooleanCheckbox id="compatibleWithOtherAnimals" value="#{advertisementBean.pet.compatibleWithOtherAnimals}" />
+
+            <p:separator />
+
+            <!-- Image Upload -->
+            <p:outputLabel for="@next" value="Upload an Image" style="font-size: 12px;" /><br/>
+            <p:fileUpload id="imageUpload" value="#{advertisementBean.image}" mode="simple" />
+
+            <!-- Submit and Cancel Buttons -->
+            <p:commandButton value="Post Advertisement" action="#{advertisementBean.addAdvertisement}" update=":addAdvertisementForm" />
+            <p:commandButton value="Cancel" onclick="window.location.href='getAllAdvertisements.xhtml';" />
+        </h:form>
+    </ui:define>
+
+</ui:composition></html>
