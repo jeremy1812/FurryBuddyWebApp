@@ -7,30 +7,72 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 
-@SessionScoped
 @Named
-public class AdoptionRequestBean extends AdoptionRequest implements Serializable {
-    private String uuid;
-    private String name;
-    private List<String> adoptionApplications;
+@SessionScoped
+public class AdoptionRequestBean implements Serializable {
 
-    // Load data for the adopter
-    public void loadAdopterData() {
-        // Load the adopter's data using the UUID
-        // Example: Query service or database for adopter's details and applications
+    private String adopterName;
+    private String petName;
+    private String petType;
+    private Date requestDate;
+    private String status;
+
+    // Getters et Setters pour toutes les propriétés
+    public String getAdopterName() {
+        return adopterName;
     }
 
-    // Getter and Setter for UUID
-    public String getUUID() {
-        return uuid;
+    public void setAdopterName(String adopterName) {
+        this.adopterName = adopterName;
     }
 
-    public void setUUID(String uuid) {
-        this.uuid = uuid;
+    public String getPetName() {
+        return petName;
     }
 
-    // Getter and Setter for other fields as needed
+    public void setPetName(String petName) {
+        this.petName = petName;
+    }
+
+    public String getPetType() {
+        return petType;
+    }
+
+    public void setPetType(String petType) {
+        this.petType = petType;
+    }
+
+    public Date getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(Date requestDate) {
+        this.requestDate = requestDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    // Méthodes métier
+    public String submitRequest() {
+        // Logique pour soumettre une demande
+        this.status = "Submitted";
+        this.requestDate = new Date();
+        System.out.println("Adoption request submitted for pet: " + petName);
+        return "confirmation.xhtml?faces-redirect=true"; // Redirige vers la page de confirmation
+    }
+
+    public String cancelRequest() {
+        // Logique pour annuler une demande
+        this.status = "Cancelled";
+        System.out.println("Adoption request cancelled for pet: " + petName);
+        return "CancelAdoptionRequest.xhtml?faces-redirect=true";
+    }
 }
-
 
 
