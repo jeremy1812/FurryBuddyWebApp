@@ -71,15 +71,14 @@ public class AdoptionRequestBean implements Serializable {
         return "confirmation.xhtml?faces-redirect=true";
     }
 
-    public String modifyRequest() {
-        this.status = "Modified";
-        this.requestDate = new Date();
+    public String cancelRequest() {
+        this.status = "Cancelled";
         FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully modified."));
-        return "confirmation.xhtml?faces-redirect=true";
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully cancelled."));
+        return "CancelAdoptionRequest.xhtml?faces-redirect=true";
     }
 
-    public String cancelRequest() {
+    public String updateRequestStatus() {
         this.status = "Cancelled";
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully cancelled."));
