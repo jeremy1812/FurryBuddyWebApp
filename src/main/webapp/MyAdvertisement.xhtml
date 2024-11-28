@@ -14,18 +14,19 @@
     <ui:define name="section-title">Your Advertisements</ui:define>
 
     <ui:define name="section-content">
-        <f:event type="preRenderView" listener="#{advertisementBean.loadAllAdvertisements()}"/>
+        <!-- Charger les adds spécifiques au propriétaire connecté -->
+        <f:event type="preRenderView" listener="#{petOwnerBean.loadMyAdvertisements}" />
 
         <!-- Tableau des annonces -->
-        <p:dataTable id="advertisements" value="#{advertisementBean.allAdvertisements}" var="advertisement">
-            <p:column headerText="Title">
-                <h:outputText value="#{advertisement.title}" />
+        <p:dataTable id="advertisements" value="#{petOwnerBean.myAdvertisements}" var="advertisement">
+            <p:column headerText="Animal">
+                <h:outputText value="#{advertisement.pet.name}" />
             </p:column>
             <p:column headerText="Description">
-                <h:outputText value="#{advertisement.description}" />
+                <h:outputText value="#{advertisement.pet.description}" />
             </p:column>
-            <p:column headerText="Price">
-                <h:outputText value="#{advertisement.price}" />
+            <p:column headerText="Ville">
+                <h:outputText value="#{advertisement.location.town}" />
             </p:column>
             <p:column headerText="Status">
                 <h:outputText value="#{advertisement.status}" />
@@ -33,7 +34,7 @@
             <p:column headerText="Actions">
                 <h:form>
                     <p:commandButton value="Edit" action="#{advertisementBean.viewDetails(advertisement)}" />
-                    <p:commandButton value="Delete" actionListener="#{advertisementBean.deleteAdvertisement()}" update="advertisements" />
+                    <p:commandButton value="Delete" actionListener="#{advertisementBean.deleteAdvertisement}" update="advertisements" />
                 </h:form>
             </p:column>
         </p:dataTable>

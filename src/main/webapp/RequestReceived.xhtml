@@ -14,10 +14,11 @@
     <ui:define name="section-title">Adoption Requests for Your Advertisements</ui:define>
 
     <ui:define name="section-content">
-        <f:event type="preRenderView" listener="#{adoptionRequestBean.loadRequestsForPetOwner()}" />
+        <!-- Charger les demandes pour les publicités du propriétaire -->
+        <f:event type="preRenderView" listener="#{petOwnerBean.loadReceivedRequests}" />
 
         <!-- Tableau des demandes d'adoption -->
-        <p:dataTable id="adoptionRequests" value="#{adoptionRequestBean.requests}" var="request">
+        <p:dataTable id="adoptionRequests" value="#{petOwnerBean.receivedRequests}" var="request">
             <p:column headerText="Advertisement Title">
                 <h:outputText value="#{request.advertisement.title}" />
             </p:column>
@@ -43,10 +44,12 @@
         </p:dataTable>
 
         <!-- Message en cas d'absence de requêtes -->
-        <h:outputText value="No adoption requests available at the moment." rendered="#{empty adoptionRequestBean.requests}" />
+        <h:outputText value="No adoption requests available at the moment."
+                      rendered="#{empty petOwnerBean.receivedRequests}" />
     </ui:define>
 
 </ui:composition>
 
 </html>
+
 
