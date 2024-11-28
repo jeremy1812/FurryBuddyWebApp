@@ -1,4 +1,4 @@
-/* General page layout */
+/* Général */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
@@ -14,55 +14,38 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    background: #ece3b9; /* Light background */
+    background: #ece3b9;
 }
 
-.header h1 {
-    font-size: 3rem;
-    color: #333;
-}
-
-.header h3 {
-    font-size: 1.5rem;
-    color: #666;
-}
-
-/* Styling for the buttons */
-.buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px; /* Space between buttons */
-    margin-top: 40px;
-}
-
-.button-primary, .button-secondary {
-    display: inline-block;
-    text-decoration: none;
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    font-weight: bold;
+/* Formulaire */
+p:panel {
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    color: #fff;
-    background-color: #007bff; /* Default primary color */
-    text-align: center;
-    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 400px; /* Ajustez en fonction de vos besoins */
 }
 
-.button-primary:hover {
-    background-color: #0056b3;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+p:commandButton {
+    margin-top: 20px;
 }
 
-.button-secondary {
-    background-color: #42b864; /* Green color for sign up */
+/* Texte de connexion */
+.login-text {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: #555;
 }
 
-.button-secondary:hover {
-    background-color: #218838;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Ensure buttons are not underlined */
-h:link {
+.login-text a {
+    color: #007bff;
     text-decoration: none;
+    font-weight: bold;
+}
+
+.login-text a:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }
