@@ -5,9 +5,11 @@ import ch.unil.furrybuddy.domain.Adopter;
 import ch.unil.furrybuddy.domain.PetOwner;
 import ch.unil.furrybuddy.domain.Location;
 import ch.unil.furrybuddy.domain.User.Role;
+import ch.unil.furrybuddy.domain.User;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -18,7 +20,7 @@ import java.util.logging.Logger;
 
 
 @Named
-@SessionScoped
+@ViewScoped
 public class RegisterBean implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -27,7 +29,6 @@ public class RegisterBean implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
-    private String username;
     private String password;
     private Role role;
     private String locationTown; // Assuming location requires a city
@@ -50,13 +51,11 @@ public class RegisterBean implements Serializable {
         firstName = null;
         lastName = null;
         email = null;
-        username = null;
         password = null;
         role = null;
         locationTown = null;
         locationPostalCode = null; //Reset location PostalCode
         locationAddress = null;
-        petBiography = "Write your pet's biography here...";
         petOwnerSelected = false;
         adopterSelected = false;
     }
@@ -123,7 +122,7 @@ public class RegisterBean implements Serializable {
                     return "Login?faces-redirect=true"; // Redirect to login page after successful registration
                 } catch (Exception e) {
                     errorMessage = e.getMessage();
-                    log.warning("Failed to register new PetOwner " + username + ": " + errorMessage);
+                    log.warning("Failed to register new PetOwner " + email + ": " + errorMessage);
                 }
                 break;
             case ADOPTER:
@@ -134,7 +133,7 @@ public class RegisterBean implements Serializable {
                     return "Login?faces-redirect=true";
                 } catch (Exception e) {
                     errorMessage = e.getMessage();
-                    log.warning("Failed to register new Adopter " + username + ": " + errorMessage);
+                    log.warning("Failed to register new Adopter " + email + ": " + errorMessage);
                 }
                 break;
             default:
@@ -155,6 +154,7 @@ public class RegisterBean implements Serializable {
     public void updateRoleSelection() {
         this.petOwnerSelected = Role.PET_OWNER.equals(role);
         this.adopterSelected = Role.ADOPTER.equals(role);
+        log.info("Role updated: " + role);
     }
 
     // Getters and Setters
@@ -182,14 +182,6 @@ public class RegisterBean implements Serializable {
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -205,14 +197,6 @@ public class RegisterBean implements Serializable {
     public void setRole(Role role) {
         this.role = role;
         updateRoleSelection(); // Update the conditional fields whenever the role changes
-    }
-
-    public String getPetBiography() {
-        return petBiography;
-    }
-
-    public void setPetBiography(String petBiography) {
-        this.petBiography = petBiography;
     }
 
     public boolean isPetOwnerSelected() {
