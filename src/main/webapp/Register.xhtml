@@ -27,12 +27,11 @@
                         </td>
                         <td style="text-align:center">
                             <!-- Updated selectOneRadio for ENUM Role -->
-                            <p:selectOneRadio id="selectUserRole" value="#{registerBean.role}" required="true"
+                            <p:selectOneRadio id="selectUserRole" value="#{registerBean.role}"
+                                              required="true"
                                               requiredMessage="You must register as PetOwner or Adopter.">
-                                itemLabel="Select Role" itemValue="
-                                <f:selectItem itemLabel="PetOwner" itemValue="#{registerBean.role.PET_OWNER}"/>
-                                <f:selectItem itemLabel="Adopter" itemValue="#{registerBean.role.ADOPTER}"/>
-                                <p:ajax event="change" listener="#{registerBean.updateRoleSelection}" update="biographyBlock" />
+                                <f:selectItem itemLabel="Adopter" itemValue="adopter"/>
+                                <f:selectItem itemLabel="Pet Owner" itemValue="petOwner"/>
                             </p:selectOneRadio>
                         </td>
                     </tr>
@@ -74,17 +73,6 @@
                     </tr>
                     <tr>
                         <td style="text-align:right">
-                            <p:outputLabel value="Username"/>
-                        </td>
-                        <td style="text-align:left">
-                            <p:inputText id="username" value="#{registerBean.username}" style="width: 300px"
-                                         required="true" requiredMessage="Username is required.">
-                                <p:ajax event="blur" update="username"/>
-                            </p:inputText>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:right">
                             <p:outputLabel value="Password"/>
                         </td>
                         <td style="text-align:left">
@@ -96,37 +84,19 @@
                         </td>
                     </tr>
                 </table>
-                <div align="left">
-                    <!-- Biography field, displayed for PetOwner only -->
-                    <h:panelGroup id="biographyBlock">
-                        <p:outputLabel value="Biography of the pet" rendered="#{registerBean.role == 'PET_OWNER'}"/>
-                        <p:inputTextarea id="biography" value="#{registerBean.petBiography}"
-                                         rendered="#{registerBean.role == registerBean.role.PET_OWNER}"
-                                         style="margin-top: 5px"
-                                         required="#{registerBean.role == registerBean.role.PET_OWNER}"
-                                         requiredMessage="Biography is required."
-                                         rows="5" cols="58" maxlength="200"
-                                         counter="charCounter"
-                                         counterTemplate="{0} characters remaining.">
-                            <p:ajax update="biography charCounter" />
-                    </p:inputTextarea>
-                        <h:outputText id="charCounter" style="font-size: 10px;"/>
-                    </h:panelGroup>
-                </div>
-
                 <br/>
                 <p:spacer height="30"/>
                 <!-- Register button -->
                 <p:commandButton id="registerButton" value="Register" action="#{registerBean.register}"
                                  update="growl"/>
                 <br/>
-                <p:spacer height="10"/>
+                <p:spacer height="40"/>
                 <p:growl id="growl" showDetail="false"/>
             </h:form>
         </p:panel>
     </div>
-    <div align="center">
-        <p:panel style="width: 600px;">
+    <div align="left">
+        <p:panel style="width: 800px;">
             <div align="left">
                 <h:outputText value="Already have an account? "/>
                 <p:link value="Login Now" outcome="Login.xhtml"/>
