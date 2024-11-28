@@ -64,38 +64,28 @@ public class AdoptionRequestBean implements Serializable {
 
     // Méthodes métier
     public String submitRequest() {
-        try {
-            // Validation
-            if (petName == null || petName.isEmpty()) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Pet name is missing."));
-                return null; // Pas de redirection
-            }
+        this.status = "Submitted";
+        this.requestDate = new Date();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully submitted."));
+        return "confirmation.xhtml?faces-redirect=true";
+    }
 
-            // Mise à jour
-            this.status = "Modified";
-            this.requestDate = new Date();
-
-            // Message utilisateur
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully modified."));
-
-            // Redirection
-            return "confirmation.xhtml?faces-redirect=true";
-        } catch (Exception e) {
-            // Gestion des erreurs
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred: " + e.getMessage()));
-            return null; // Pas de redirection
-        }
+    public String modifyRequest() {
+        this.status = "Modified";
+        this.requestDate = new Date();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully modified."));
+        return "confirmation.xhtml?faces-redirect=true";
     }
 
     public String cancelRequest() {
-        // Logique pour annuler une demande
         this.status = "Cancelled";
-        System.out.println("Adoption request cancelled for pet: " + petName);
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully cancelled."));
         return "CancelAdoptionRequest.xhtml?faces-redirect=true";
     }
+
 }
 
 
