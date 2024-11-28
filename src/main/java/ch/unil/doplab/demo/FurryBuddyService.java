@@ -270,6 +270,15 @@ public class FurryBuddyService {
         return response.getStatus() == 200;
     }
 
+    public List<Advertisement> getAdvertisementsByPetOwner(UUID petOwnerID) {
+        return advertisementTarget
+                .path("byOwner")
+                .path(petOwnerID.toString())
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<Advertisement>>() {});
+    }
+
+
     /*
     Adoption request operations
      */
@@ -342,6 +351,15 @@ public class FurryBuddyService {
                 .delete();
         return response.getStatus() == 200;
     }
+
+    public List<AdoptionRequest> getRequestsForAdvertisements(UUID petOwnerID) {
+        return adoptionRequestTarget
+                .path("requestsForOwner")
+                .path(petOwnerID.toString())
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<AdoptionRequest>>() {});
+    }
+
 
 
 }

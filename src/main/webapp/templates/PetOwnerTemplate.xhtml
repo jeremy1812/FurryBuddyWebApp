@@ -12,6 +12,10 @@
     <!-- Définition du titre de la page -->
     <ui:define name="title">FurryBuddy - Pet Owner Dashboard</ui:define>
 
+    <h:form>
+        <h:outputText value="Bienvenue #{petOwnerBean.name} !" styleClass="welcome-message" />
+    </h:form>
+
     <!-- Menu spécifique pour les Pet Owners -->
     <ui:define name="menu">
         <h:link outcome="MyAdvertisement" value="My Advertisements" />
