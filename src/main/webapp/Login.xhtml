@@ -15,7 +15,6 @@
                 <br/>
                 <h1>Login</h1>
             </p:panel>
-
             <p:panel style="width: 600px;">
                 <h:form id="loginForm">
                     <table>
@@ -55,8 +54,9 @@
                                 </p:selectOneRadio>
                             </td>
                         </tr>
+                        <p:spacer height="25" />
                         <tr>
-                            <td style="text-align:center; height:50px">
+                            <td colspan="2" style="text-align:center; padding-top: 20px;">
                                 <p:commandButton id="loginButton" value="Login" action="#{loginBean.login}"
                                                  oncomplete="#{loginBean.reset()}" update="growl"/>
                             </td>
@@ -64,13 +64,15 @@
                     </table>
                     <p:growl id="growl" showDetail="false"/>
                 </h:form>
-            </p:panel>
-        </div>
-        <div align="center">
-            <p:panel style="width: 600px;">
-                <div align="left">
-                    <h:outputText value="Don't have an account? "/>
-                    <p:link value="Sign Up Now" outcome="Register.xhtml"/>
+                <!-- Section ajoutée ici pour être directement sous le formulaire -->
+                <br/>
+                <div class="login-text"> <!-- correspond au placement de texte dans css -->
+                    <p:panel style="width: 400px;">
+                        <div align="center">
+                            <h:outputText value="Don't have an account? "/>
+                            <p:link value="Sign Up Now" outcome="Register.xhtml"/>
+                        </div>
+                    </p:panel>
                 </div>
             </p:panel>
         </div>
