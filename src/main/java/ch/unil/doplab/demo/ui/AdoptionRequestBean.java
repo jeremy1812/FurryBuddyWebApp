@@ -2,9 +2,12 @@ package ch.unil.doplab.demo.ui;
 
 import ch.unil.furrybuddy.domain.AdoptionRequest;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Named
@@ -16,6 +19,7 @@ public class AdoptionRequestBean implements Serializable {
     private String petType;
     private Date requestDate;
     private String status;
+
 
     // Getters et Setters pour toutes les propriétés
     public String getAdopterName() {
@@ -60,11 +64,30 @@ public class AdoptionRequestBean implements Serializable {
 
     // Méthodes métier
     public String submitRequest() {
-        // Logique pour soumettre une demande
-        this.status = "Submitted";
-        this.requestDate = new Date();
-        System.out.println("Adoption request submitted for pet: " + petName);
-        return "confirmation.xhtml?faces-redirect=true"; // Redirige vers la page de confirmation
+        try {
+            // Validation
+            if (petName == null || petName.isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Pet name is missing."));
+                return null; // Pas de redirection
+            }
+
+            // Mise à jour
+            this.status = "Modified";
+            this.requestDate = new Date();
+
+            // Message utilisateur
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully modified."));
+
+            // Redirection
+            return "confirmation.xhtml?faces-redirect=true";
+        } catch (Exception e) {
+            // Gestion des erreurs
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred: " + e.getMessage()));
+            return null; // Pas de redirection
+        }
     }
 
     public String cancelRequest() {
