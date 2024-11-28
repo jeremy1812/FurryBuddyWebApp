@@ -44,7 +44,9 @@
                             </td>
                         </tr>
                         <tr>
-                            <td></td>
+                            <td style="text-align:right">
+                                <p:outputLabel value="Role"/>
+                            </td>
                             <td style="text-align:center">
                                 <p:selectOneRadio id="selectUserRole" value="#{loginBean.role}"
                                                   required="true"
@@ -63,16 +65,12 @@
                         </tr>
                     </table>
                     <p:growl id="growl" showDetail="false"/>
+                    <p:spacer height="20"/>
                 </h:form>
                 <!-- Section ajoutée ici pour être directement sous le formulaire -->
-                <br/>
                 <div class="login-text"> <!-- correspond au placement de texte dans css -->
-                    <p:panel style="width: 400px;">
-                        <div align="center">
-                            <h:outputText value="Don't have an account? "/>
-                            <p:link value="Sign Up Now" outcome="Register.xhtml"/>
-                        </div>
-                    </p:panel>
+                    <h:outputText value="Don't have an account? "/>
+                    <p:link value="Sign Up Now" outcome="Register.xhtml"/>
                 </div>
             </p:panel>
         </div>
