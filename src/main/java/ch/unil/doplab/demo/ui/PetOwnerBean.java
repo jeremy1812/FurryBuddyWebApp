@@ -4,9 +4,9 @@ import ch.unil.doplab.demo.FurryBuddyService;
 import ch.unil.furrybuddy.domain.Advertisement;
 import ch.unil.furrybuddy.domain.AdoptionRequest;
 import ch.unil.furrybuddy.domain.PetOwner;
-import ch.unil.furrybuddy.domain.Location;
-import ch.unil.furrybuddy.domain.Pet;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -33,6 +33,7 @@ public class PetOwnerBean implements Serializable {
     private String currentPassword;
     private String newPassword;
     private String dialogMessage;
+    private boolean buttonDisabled;
     private boolean changed; // Indique si des modifications ont été apportées
 
     @Inject
@@ -47,10 +48,6 @@ public class PetOwnerBean implements Serializable {
 
     public void init() {
         uuid = null;
-    }
-
-    public UUID getPetOwnerID(){
-        return loginBean.getLoggedInUserId();
     }
 
     // Méthode pour charger les données du propriétaire
@@ -74,7 +71,7 @@ public class PetOwnerBean implements Serializable {
         return Collections.emptyList();
     }
 
-    // Charger les demandes reçues pour ses publicités
+    // Charger les demandes reçues pour ses publicités TODO
     public void loadReceivedRequests() {
         if (uuid != null) {
             receivedRequests = theService.getRequestsForAdvertisements(uuid);
@@ -228,5 +225,41 @@ public class PetOwnerBean implements Serializable {
 
     public boolean isChanged() {
         return changed;
+    }
+
+    public boolean isButtonDisabled() {
+        return buttonDisabled;
+    }
+
+    public void setButtonDisabled(boolean buttonDisabled) {
+        this.buttonDisabled = buttonDisabled;
+    }
+
+    public String deleteAccount() {
+        UUID petOwnerID = loginBean.getLoggedInUserId();
+        if (petOwnerID == null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "User ID not found. Please log in."));
+            return null;
+        }
+
+        try {
+            boolean success = theService.deletePetOwner(petOwnerID);
+            if (success) {
+                // Log out the user and redirect to the login page
+                loginBean.logout();
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Account Deleted", "Your account has been deleted."));
+                return "Login?faces-redirect=true";
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete account."));
+            }
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred: " + e.getMessage()));
+        }
+
+        return null; // Stay on the same page if deletion fails
     }
 }

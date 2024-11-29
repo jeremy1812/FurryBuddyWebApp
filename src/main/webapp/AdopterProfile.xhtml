@@ -38,9 +38,18 @@
             <p:message for="email" display="text"/><br/>
 
             <p:commandButton id="updateButton" value="Update" disabled="#{adopterBean.buttonDisabled}"
-                             action="#{adopterBean.updateProfile}" update="basicInfo"/>
+                             action="#{adopterBean.updateProfile()}" update="basicInfo"/>
             <p:commandButton id="undoButton" value="Undo" actionListener="#{adopterBean.undoChanges}"
                              immediate="true" update="basicInfo"/>
+            <p:dialog id="updateErrorDialog"
+                      widgetVar="updateErrorDialog"
+                      header="Update impossible"
+                      modal="true"
+                      resizable="true"
+                      width="250"
+                      height="50">
+                <h:outputText id="updateErrorMessage" value="#{adopterBean.dialogMessage}"/>
+            </p:dialog>
         </h:form>
         <br/>
 
@@ -57,8 +66,21 @@
             <p:message for="newPassword" display="text"/><br/>
 
             <p:commandButton id="changePasswordButton" value="Save"
-                             action="#{adopterBean.changePassword}" update="changePasswordForm"/>
+                             action="#{adopterBean.changePassword()}" update="changePasswordForm"/>
         </h:form>
+
+        <!-- Delete account -->
+        <p:confirmDialog id="confirmDeleteDialog" header="Confirm Deletion" widgetVar="confirmDeleteDialog"
+                         message="Are you sure you want to delete your account? This action cannot be undone.">
+            <h:form>
+                <p:commandButton value="Yes" styleClass="ui-button-danger"
+                                 action="#{adopterBean.deleteAccount}"
+                                 update="@all"
+                                 oncomplete="PF('confirmDeleteDialog').hide()" />
+                <p:commandButton value="No" onclick="PF('confirmDeleteDialog').hide()" type="button" />
+            </h:form>
+        </p:confirmDialog>
+        <p:commandButton value="Delete Account" onclick="PF('confirmDeleteDialog').show();" />
     </ui:define>
 
 </ui:composition>

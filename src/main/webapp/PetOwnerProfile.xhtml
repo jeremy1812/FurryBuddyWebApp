@@ -10,7 +10,7 @@
 <ui:composition template="templates/PetOwnerTemplate.xhtml">
 
     <ui:define name="title">PetOwner | Profile</ui:define>
-    <ui:define name="section-title">#{petOwnerBean.fullName} | Profile</ui:define>
+    <ui:define name="section-title">#{petOwnerBean.firstName} #{petOwnerBean.lastName} | Profile</ui:define>
 
     <ui:define name="section-content">
         <!-- Basic Information -->
@@ -58,7 +58,22 @@
 
             <p:commandButton id="changePasswordButton" value="Save"
                              action="#{petOwnerBean.changePassword}" update="changePasswordForm"/>
+
         </h:form>
+        <p:separator height="20"/>
+
+        <!-- Delete account -->
+        <p:confirmDialog id="confirmDeleteDialog" header="Confirm Deletion" widgetVar="confirmDeleteDialog"
+                         message="Are you sure you want to delete your account? This action cannot be undone.">
+            <h:form>
+                <p:commandButton value="Yes" styleClass="ui-button-danger"
+                                 action="#{petOwnerBean.deleteAccount}"
+                                 update="@all"
+                                 oncomplete="PF('confirmDeleteDialog').hide()" />
+                <p:commandButton value="No" onclick="PF('confirmDeleteDialog').hide()" type="button" />
+            </h:form>
+        </p:confirmDialog>
+        <p:commandButton value="Delete Account" onclick="PF('confirmDeleteDialog').show();" />
     </ui:define>
 
 </ui:composition>

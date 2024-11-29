@@ -2,21 +2,26 @@ package ch.unil.doplab.demo.ui;
 
 import ch.unil.doplab.demo.FurryBuddyService;
 import ch.unil.furrybuddy.domain.Adopter;
+import ch.unil.furrybuddy.domain.AdoptionRequest;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @SessionScoped
 @Named
-public class AdopterBean implements Serializable {
+public class AdopterBean extends Adopter implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // Fields
+    private Adopter theAdopter;
     private UUID uuid;
-    private String name;
     private String firstName;
     private String lastName;
     private String email;
@@ -25,32 +30,62 @@ public class AdopterBean implements Serializable {
     private boolean changed;
     private String dialogMessage;
     private boolean buttonDisabled;
+    private List<AdoptionRequest> requests;
 
     @Inject
     private FurryBuddyService theService;
 
+    @Inject
+    private LoginBean loginBean;
+
+    public AdopterBean() {
+        init();
+    }
+
+    public void init() {
+        uuid = null;
+        theAdopter = null;
+        firstName = null;
+        lastName = null;
+        email = null;
+        currentPassword = null;
+        newPassword = null;
+        changed = false;
+        dialogMessage = null;
+        buttonDisabled = false;
+    }
+
     // Load adopter data
     public void loadAdopterData() {
         if (uuid != null) {
-            Adopter adopter = theService.getAdopter(uuid.toString());
+            Adopter adopter = theService.getAdopter(uuid);
             if (adopter != null) {
                 this.firstName = adopter.getFirstName();
                 this.lastName = adopter.getLastName();
                 this.email = adopter.getEmail();
+                this.requests = adopter.getAdoptionRequests();
             }
         }
+    }
+
+    public List<AdoptionRequest> loadMyRequests() {
+        UUID userId = loginBean.getLoggedInUserId();
+        if (uuid != null) {
+            requests = theService.getAdopter(userId).getAdoptionRequests();
+        }
+        return Collections.emptyList();
     }
 
     // Check if fields have changed
     public void checkIfChanged() {
         if (uuid != null) {
-            Adopter adopter = theService.getAdopter(uuid.toString());
+            Adopter adopter = theService.getAdopter(uuid);
             if (adopter != null) {
                 boolean nameChanged = !this.firstName.equals(adopter.getFirstName());
                 boolean lastNameChanged = !this.lastName.equals(adopter.getLastName());
                 boolean emailChanged = !this.email.equals(adopter.getEmail());
-                this.changed = nameChanged || emailChanged;
-                this.buttonDisabled = !this.changed;
+                this.changed = nameChanged || emailChanged || lastNameChanged;
+//                this.buttonDisabled = !this.changed;
             }
         }
     }
@@ -58,8 +93,8 @@ public class AdopterBean implements Serializable {
     // Update profile information
     public void updateProfile() {
         try {
-            Adopter adopter = theService.getAdopter(uuid.toString());
-            if (adopter != null) {
+            Adopter adopter = theService.getAdopter(uuid);
+            if (this.getUUID() != null) {
                 adopter.setFirstName(this.firstName);
                 adopter.setLastName(this.lastName);
                 adopter.setEmail(this.email);
@@ -75,14 +110,15 @@ public class AdopterBean implements Serializable {
     // Undo changes and reload data
     public void undoChanges() {
         loadAdopterData();
+        this.replaceWith(theAdopter);
         this.changed = false;
-        this.buttonDisabled = true;
+//        this.buttonDisabled = true;
     }
 
     // Change password
     public void changePassword() {
         try {
-            Adopter adopter = theService.getAdopter(uuid.toString());
+            Adopter adopter = theService.getAdopter(uuid);
             if (adopter != null && adopter.getPassword().equals(this.currentPassword)) {
                 adopter.setPassword(this.newPassword); // Replace with secure hashing if needed
                 theService.setAdopter(adopter);
@@ -103,20 +139,12 @@ public class AdopterBean implements Serializable {
     }
 
     // Getters and Setters
-    public UUID getUuid() {
+    public UUID getUUID() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUUID(UUID uuid) {
         this.uuid = uuid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getFirstName() {
@@ -183,7 +211,36 @@ public class AdopterBean implements Serializable {
         this.buttonDisabled = buttonDisabled;
     }
 
-    public void setUUID(UUID uuid) {
+    public List<AdoptionRequest> getRequests() {return requests;}
+
+    public void setRequests(List<AdoptionRequest> requests) {this.requests = requests;}
+
+    public String deleteAccount() {
+        UUID adopterID = loginBean.getLoggedInUserId();
+        if (adopterID == null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "User ID not found. Please log in."));
+            return null;
+        }
+
+        try {
+            boolean success = theService.deleteAdopter(adopterID);
+            if (success) {
+                // Log out the user and redirect to the login page
+                loginBean.logout();
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Account Deleted", "Your account has been deleted."));
+                return "Login?faces-redirect=true";
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete account."));
+            }
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred: " + e.getMessage()));
+        }
+
+        return null; // Stay on the same page if deletion fails
     }
 }
 

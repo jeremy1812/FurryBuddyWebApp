@@ -58,7 +58,7 @@ public class LoginBean implements Serializable {
                     this.role = User.Role.ADOPTER;
                     adopterBean.setUUID(uuid);
                     adopterBean.loadAdopterData(); // Load data specific to the adopter
-                    return "GetAllAdvertisements?faces-redirect=true"; // Redirect to adopter dashboard
+                    return "MyRequest?faces-redirect=true"; // Redirect to adopter dashboard
                 default:
                     FacesContext.getCurrentInstance().addMessage(null,
                             new FacesMessage(FacesMessage.SEVERITY_ERROR,
