@@ -8,28 +8,78 @@
 <f:view>
     <h:head>
         <title>#{advertisementBean.selectedAdvertisement.pet.name}</title>
+        <h:outputStylesheet name="css/new.css"/>
     </h:head>
     <h:body>
         <f:event type="preRenderView" listener="#{advertisementBean.loadSpecificAdvertisement(advertisementBean.selectedAdvertisement)}" />
+        <!-- Main Container -->
+        <p:panel style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+            <!-- Header Section -->
+            <p:commandButton value="Back to all advertisements" onclick="window.location.href='GetAllAdvertisements.xhtml'"/>
 
-        <div class="container">
-            <div class="header">
-                <h1>Advertisements</h1>
-            </div>
-                <div class="content">
-                    <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG"/>
-                    <div class="details">
-                        <p><strong>Name:</strong> #{advertisementBean.selectedAdvertisement.pet.name}</p>
-                        <p><strong>Species:</strong> #{advertisementBean.selectedAdvertisement.pet.species}</p>
-                        <p><strong>Breed:</strong> #{advertisementBean.selectedAdvertisement.pet.breed}</p>
-                        <p><strong>Age:</strong> #{advertisementBean.selectedAdvertisement.pet.age} years old</p>
-                        <p><strong>Description:</strong> #{advertisementBean.selectedAdvertisement.pet.description}</p>
-                        <p><strong>Location:</strong> #{advertisementBean.selectedAdvertisement.location.town}, #{advertisementBean.selectedAdvertisement.location.postalCode}</p>
-                        <p><strong>Price:</strong> $#{advertisementBean.selectedAdvertisement.pet.price}</p>
-                    </div>
-                    <a href="getAllAdvertisements.xhtml" class="back-btn">Back to All Advertisements</a>
-                </div>
-            </div>
+            <!-- Carousel Section -->
+            <p:panel header="Images" style="margin-bottom: 20px;">
+                <p:galleria value="${pageContext.request.contextPath}./images/IMG_4807.JPG" var="image" panelWidth="500" panelHeight="300" showThumbnails="true">
+                    <p:graphicImage value="#{image}" alt="Animal Image" style="max-width: 300px; height: auto;" />
+                </p:galleria>
+            </p:panel>
+<!--            <p:panel header="Images" style="margin-bottom: 20px;">-->
+<!--                <p:galleria showThumbnails="false" panelWidth="500" panelHeight="300">-->
+<!--                    <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG" alt="Animal Image" style="max-width: 300px; height: auto;"/>-->
+<!--                </p:galleria>-->
+<!--            </p:panel>-->
+
+            <!-- Description Section -->
+            <p:panel header="Description" style="margin-top: 20px;">
+                <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.description}" escape="false" />
+            </p:panel>
+
+            <!-- Details Section -->
+            <h:outputText value="Caracteristics" />
+
+            <p:panelGrid columns="3" styleClass="details-grid" columnClasses="detail-column">
+                <p:panel header="Age">
+                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.age} years" />
+                </p:panel>
+                <p:panel header="#{advertisementBean.selectedAdvertisement.pet.name}" style="margin-bottom: 20px;">
+                    <h:outputText value="Species: #{advertisementBean.selectedAdvertisement.pet.species}" />
+                </p:panel>
+                <p:panel header="Breed">
+                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.breed}" />
+                </p:panel>
+                <p:panel header="Color">
+                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.color}" />
+                </p:panel>
+                <p:panel header="Neutered">
+                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.neutered ? 'Yes' : 'No'}" />
+                </p:panel>
+                <p:panel header="Vaccinated">
+                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.vaccinated ? 'Yes' : 'No'}" />
+                </p:panel>
+                <p:panel header="Price">
+                    <h:outputText value="CHF #{advertisementBean.selectedAdvertisement.pet.price}" />
+                </p:panel>
+            </p:panelGrid>
+
+            <!-- Compatibility Section -->
+            <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.name} is compatible with ..." />
+
+            <p:panelGrid columns="3" styleClass="details-grid" columnClasses="detail-column">
+                <p:panel header="Kids">
+                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.compatibleWithKids ? 'Yes': 'No'}" />
+                </p:panel>
+                <p:panel header="Families">
+                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.compatibleWithFamilies ? 'Yes': 'No'}" />
+                </p:panel>
+                <p:panel header="Inexperienced owners">
+                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.compatibleWithInexperiencedOwners ? 'Yes': 'No'}" />
+                </p:panel>
+                <p:panel header="Other Animals">
+                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.compatibleWithOtherAnimals ? 'Yes' : 'No'}" />
+                </p:panel>
+            </p:panelGrid>
+
+        </p:panel>
     </h:body>
 </f:view>
 </html>

@@ -61,7 +61,7 @@ public class FurryBuddyService {
      PetOwner operations
      */
 
-    public PetOwner getPetOwner(String id) {
+    public PetOwner getPetOwner(UUID id) {
         var petowner = petOwnerTarget
                 .path(id.toString())
                 .request()
@@ -238,8 +238,12 @@ public class FurryBuddyService {
     }
 
     public Advertisement addAdvertisement(Advertisement advertisement) throws Exception {
-        advertisement.setAdvertisementID(null);  // To make sure the id is not set and avoid bug related to ill-formed UUID on server side
-        var response = advertisementTarget
+        advertisement.setAdvertisementID(null);// To make sure the id is not set and avoid bug related to ill-formed UUID on server side
+        var petownerID = advertisement.getPetOwnerID();
+
+        var response = serviceTarget
+                .path(petownerID.toString())
+                .path("createAdvertisement")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(advertisement, MediaType.APPLICATION_JSON));
 
@@ -262,21 +266,23 @@ public class FurryBuddyService {
         }
     }
 
-    public boolean deleteAdvertisement(UUID id) {
-        var response = advertisementTarget
-                .path(id.toString())
+    public boolean deleteAdvertisement(UUID advertisementID, UUID petOwnerID) {
+        var response = serviceTarget
+                .path(petOwnerID.toString())
+                .path("deleteAdvertisement")
+                .path(advertisementID.toString())
                 .request(MediaType.APPLICATION_JSON)
                 .delete();
         return response.getStatus() == 200;
     }
 
-    public List<Advertisement> getAdvertisementsByPetOwner(UUID petOwnerID) {
-        return advertisementTarget
-                .path("byOwner")
-                .path(petOwnerID.toString())
-                .request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<Advertisement>>() {});
-    }
+//    public List<Advertisement> getAdvertisementsByPetOwner(UUID petOwnerID) {
+//        return advertisementTarget
+//                .path("byOwner")
+//                .path(petOwnerID.toString())
+//                .request(MediaType.APPLICATION_JSON)
+//                .get(new GenericType<List<Advertisement>>() {});
+//    }
 
 
     /*

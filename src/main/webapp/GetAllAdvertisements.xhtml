@@ -5,99 +5,106 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:head>
-        <title>Advertisements</title>
-    </h:head>
-    <h:body>
-        <f:event type="preRenderView" listener="#{advertisementBean.loadAllAdvertisements()}" />
 
-        <div class="container">
-            <div class="header">
-                <h1>All Advertisements</h1>
-            </div>
+<ui:composition template="templates/AdopterTemplate.xhtml">
 
-            <!-- Filters -->
-            <h:form>
-                <p:toolbar>
-                    <p:toolbarGroup>
-                        <p:inputText id="searchSpecies" placeholder="Search by Species"  />
-                        <p:commandButton value="Search"  />
-                    </p:toolbarGroup>
-                </p:toolbar>
-            </h:form>
+    <!-- Titre et contenu dynamiques -->
+    <ui:define name="title">All Advertisements</ui:define>
+    <ui:define name="section-title">All Advertisements</ui:define>
 
-            <!-- Cards Layout -->
-<!--            <ui:repeat value="#{advertisementBean.allAdvertisements}" var="ad">-->
-<!--                <p:card style="width: 25em; margin-bottom: 20px; padding: 5px">-->
-<!--                    <f:facet name="header">-->
-<!--                        <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG"/>-->
-<!--                    </f:facet>-->
-<!--                    <f:facet name="title">-->
-<!--                        #{ad.pet.name} | #{ad.pet.species}, #{ad.pet.age} years old-->
-<!--                    </f:facet>-->
-<!--                    <f:facet name="subtitle">-->
-<!--                    #{ad.location.town}, #{ad.location.postalCode}-->
-<!--                    </f:facet>-->
+    <ui:define name="section-content">
+        <f:event type="preRenderView" listener="#{advertisementBean.loadAllAdvertisements()}"/>
 
-<!--                    <p>#{ad.pet.description}</p>-->
+        <!-- Filters -->
+        <h:form id="filterForm">
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <!-- Species Filter -->
+                    <p:selectOneMenu id="filterSpecies" value="#{advertisementBean.selectedSpecies}" style="width:150px">
+                        <f:selectItem itemLabel="Select Species" itemValue="" />
+                        <f:selectItems value="#{advertisementBean.speciesOptions}" var="species"
+                                       itemLabel="#{species}" itemValue="#{species}" />
+                    </p:selectOneMenu>
 
-<!--                    <f:facet name="footer">-->
-<!--                        <p:commandButton value="View" action="#{advertisementBean.viewDetails(ad)}"/>-->
-<!--                    </f:facet>-->
-<!--                </p:card>-->
-<!--            </ui:repeat>-->
+                    <!-- Breed Filter -->
+                    <p:selectOneMenu id="filterBreed" value="#{advertisementBean.selectedBreed}" style="width:150px">
+                        <f:selectItem itemLabel="Select Breed" itemValue="" />
+                        <f:selectItems value="#{advertisementBean.breedOptions}" var="breed"
+                                       itemLabel="#{breed}" itemValue="#{breed}" />
+                    </p:selectOneMenu>
 
-            <div class="card advertisement">
-                <h:form id="advertisementForm">
-                    <p:dataView var="ad" value="#{advertisementBean.allAdvertisements}" rows="12" paginator="true"
-                                rowsPerPageTemplate="6,12,16"
-                                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+                    <!-- Gender Filter -->
+                    <p:selectOneMenu id="filterGender" value="#{advertisementBean.selectedGender}" style="width:150px">
+                        <f:selectItem itemLabel="Select Gender" itemValue="" />
+                        <f:selectItem itemLabel="Male" itemValue="MALE" />
+                        <f:selectItem itemLabel="Female" itemValue="FEMALE" />
+                    </p:selectOneMenu>
 
-                        <!-- Grid View -->
-                        <p:dataViewGridItem>
-                            <div class="advertisement-grid-item card border-1">
-                                <div class="advertisement-grid-item-top">
-                                    <div>
-                                        <span class="advertisement-category">#{ad.pet.species}</span>
-                                    </div>
-                                    <span class="advertisement-status badge-#{ad.status}">#{ad.status}</span>
-                                </div>
-                                <div class="advertisement-grid-item-content">
-                                    <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG" alt="Pet Image" width="100%" />
-                                    <div class="advertisement-name">#{ad.pet.name}</div>
-                                    <div class="advertisement-description">#{ad.pet.description}</div>
-                                    <div class="advertisement-price">CHF #{ad.pet.price}</div>
-                                </div>
-                                <div class="advertisement-grid-item-bottom">
-                                    <p:commandButton value="View Details" icon="pi pi-eye" action="#{advertisementBean.viewDetails(ad)}" />
-                                </div>
+                    <!-- Compatibility Filter -->
+                    <p:selectCheckboxMenu id="filterCompatibility" value="#{advertisementBean.selectedCompatibility}"
+                                          label="Compatibility Features" multiple="true" style="width:200px">
+                        <f:selectItems value="#{advertisementBean.compatibilityOptions}" var="feature"
+                                       itemLabel="#{feature}" itemValue="#{feature}" />
+                    </p:selectCheckboxMenu>
+
+                    <!-- Apply Filters Button -->
+                    <p:commandButton value="Apply Filters" icon="pi pi-filter" actionListener="#{advertisementBean.applyFilters}"
+                                     update="advertisementForm" />
+                </p:toolbarGroup>
+            </p:toolbar>
+        </h:form>
+
+
+        <h:form id="advertisementForm">
+            <p:dataView var="ad" value="#{advertisementBean.filteredAdvertisements}" rows="12" paginator="true"
+                        rowsPerPageTemplate="6,12,16"
+                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+
+                <!-- Grid View -->
+                <p:dataViewGridItem>
+                    <div class="advertisement-grid-item card border-1">
+                        <div class="advertisement-grid-item-top">
+                            <div>
+                                <span class="advertisement-category">#{ad.pet.species}</span>
                             </div>
-                        </p:dataViewGridItem>
+                            <span class="advertisement-status badge-#{ad.status}">#{ad.status}</span>
+                        </div>
+                        <div class="advertisement-grid-item-content">
+                            <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG"
+                                            alt="Pet Image"/>
+                            <div class="advertisement-name">#{ad.pet.name}</div>
+                            <div class="advertisement-description">#{ad.pet.description}</div>
+                            <div class="advertisement-price">CHF #{ad.pet.price}</div>
+                        </div>
+                        <div class="advertisement-grid-item-bottom">
+                            <p:commandButton value="View Details" icon="pi pi-eye"
+                                             action="#{advertisementBean.viewDetails(ad)}"/>
+                        </div>
+                    </div>
+                </p:dataViewGridItem>
 
-                        <!-- List View -->
-                        <p:dataViewListItem>
-                            <div class="advertisement-list-item">
-                                <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG" alt="Pet Image" width="150" />
-                                <div class="advertisement-list-detail">
-                                    <div class="advertisement-name">#{ad.pet.name}</div>
-                                    <div class="advertisement-description">#{ad.pet.description}</div>
-                                    <div class="advertisement-species">Species: #{ad.pet.species}</div>
-                                    <div class="advertisement-price">CHF #{ad.pet.price}</div>
-                                </div>
-                                <div class="advertisement-list-action">
-                                    <p:commandButton value="View Details" icon="pi pi-eye" action="#{advertisementBean.viewDetails(ad)}" />
-                                    <span class="advertisement-status badge-#{ad.status}">#{ad.status}</span>
-                                </div>
-                            </div>
-                        </p:dataViewListItem>
+                <!-- List View -->
+                <p:dataViewListItem>
+                    <div class="advertisement-list-item">
+                        <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG"
+                                        alt="Pet Image" width="150"/>
+                        <div class="advertisement-list-detail">
+                            <div class="advertisement-name">#{ad.pet.name}</div>
+                            <div class="advertisement-description">#{ad.pet.description}</div>
+                            <div class="advertisement-species">Species: #{ad.pet.species}</div>
+                            <div class="advertisement-price">CHF #{ad.pet.price}</div>
+                        </div>
+                        <div class="advertisement-list-action">
+                            <p:commandButton value="View Details" icon="pi pi-eye"
+                                             action="#{advertisementBean.viewDetails(ad)}"/>
+                            <span class="advertisement-status badge-#{ad.status}">#{ad.status}</span>
+                        </div>
+                    </div>
+                </p:dataViewListItem>
 
-                    </p:dataView>
-                </h:form>
-            </div>
-
-        </div>
-    </h:body>
-</f:view>
+            </p:dataView>
+        </h:form>
+    </ui:define>
+</ui:composition>
 </html>
