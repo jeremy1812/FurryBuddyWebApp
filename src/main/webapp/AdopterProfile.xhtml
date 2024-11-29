@@ -1,1 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="templates/AdopterTemplate.xhtml">
+
+    <ui:define name="title">Adopter | Profile</ui:define>
+    <ui:define name="section-title">#{adopterBean.fullName} | Profile</ui:define>
+
+    <ui:define name="section-content">
+        <!-- Basic Information -->
+        <h:form id="basicInfo">
+            <p:outputLabel for="@next" value="First Name"/><br/>
+            <p:inputText id="firstname" value="#{adopterBean.firstName}" required="true"
+                         requiredMessage="First name is required.">
+                <p:ajax event="blur" update="basicInfo" listener="#{adopterBean.checkIfChanged()}"/>
+            </p:inputText>
+            <p:message for="firstname" display="text"/><br/>
+
+            <p:outputLabel for="@next" value="Last Name"/><br/>
+            <p:inputText id="lastname" value="#{adopterBean.lastName}" required="true"
+                         requiredMessage="Last name is required.">
+                <p:ajax event="blur" update="basicInfo" listener="#{adopterBean.checkIfChanged()}"/>
+            </p:inputText>
+            <p:message for="lastname" display="text"/><br/>
+
+            <p:outputLabel for="@next" value="Email"/><br/>
+            <p:inputText id="email" value="#{adopterBean.email}" required="true"
+                         requiredMessage="Email is required." validatorMessage="Invalid email format.">
+                <f:validateRegex pattern="^[^@]+@[^@]+\.[^@]+$"/>
+                <p:ajax event="blur" update="basicInfo" listener="#{adopterBean.checkIfChanged()}"/>
+            </p:inputText>
+            <p:message for="email" display="text"/><br/>
+
+            <p:commandButton id="updateButton" value="Update" disabled="#{adopterBean.buttonDisabled}"
+                             action="#{adopterBean.updateProfile}" update="basicInfo"/>
+            <p:commandButton id="undoButton" value="Undo" actionListener="#{adopterBean.undoChanges}"
+                             immediate="true" update="basicInfo"/>
+        </h:form>
+        <br/>
+
+        <!-- Change Password -->
+        <h:form id="changePasswordForm">
+            <p:outputLabel for="@next" value="Current Password"/><br/>
+            <p:password id="currentPassword" value="#{adopterBean.currentPassword}" required="true"
+                        requiredMessage="Current password is required."/>
+            <p:message for="currentPassword" display="text"/><br/>
+
+            <p:outputLabel for="@next" value="New Password"/><br/>
+            <p:password id="newPassword" value="#{adopterBean.newPassword}" required="true"
+                        requiredMessage="New password is required."/>
+            <p:message for="newPassword" display="text"/><br/>
+
+            <p:commandButton id="changePasswordButton" value="Save"
+                             action="#{adopterBean.changePassword}" update="changePasswordForm"/>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
+
+</html>
 

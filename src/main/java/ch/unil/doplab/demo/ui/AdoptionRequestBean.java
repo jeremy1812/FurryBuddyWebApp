@@ -81,7 +81,7 @@ public class AdoptionRequestBean implements Serializable {
     }
 
     public String updateRequestStatus() {
-        this.status = "PENDING"// à revoir;
+        this.status = "PENDING"; // à revoir;
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully cancelled."));
         return "CancelAdoptionRequest.xhtml?faces-redirect=true";
