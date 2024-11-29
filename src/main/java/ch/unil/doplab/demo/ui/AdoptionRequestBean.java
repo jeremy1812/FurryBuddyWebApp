@@ -19,6 +19,8 @@ public class AdoptionRequestBean implements Serializable {
     private String petType;
     private Date requestDate;
     private String status;
+    private String requestMessage;
+    private AdvertisementBean currentAdvertisement;
 
 
     // Getters et Setters pour toutes les propriétés
@@ -62,12 +64,29 @@ public class AdoptionRequestBean implements Serializable {
         this.status = status;
     }
 
+    public String getRequestMessage() { // Getter for requestMessage
+        return requestMessage;
+    }
+
+    public void setRequestMessage(String requestMessage) { // Setter for requestMessage
+        this.requestMessage = requestMessage;
+    }
+    public AdvertisementBean getCurrentAdvertisement() {
+        return currentAdvertisement;
+    }
+
+    public void setCurrentAdvertisement(AdvertisementBean currentAdvertisement) {
+        this.currentAdvertisement = currentAdvertisement;
+    }
+
     // Méthodes métier
     public String submitRequest() {
         this.status = "Submitted";
         this.requestDate = new Date();
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully submitted."));
+
+        // Mock sending request, log pet name
+        System.out.println("Request sent for pet: " + getPetName());
+
         return "ConfirmationRequestSent.xhtml?faces-redirect=true";
     }
 
@@ -81,7 +100,7 @@ public class AdoptionRequestBean implements Serializable {
     }
 
     public String updateRequestStatus() {
-        this.status = "PENDING"; // à revoir;
+        this.status = "PENDING";// à revoir;
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully cancelled."));
         return "CancelAdoptionRequest.xhtml?faces-redirect=true";

@@ -1,0 +1,30 @@
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #fff7f0; /* Couleur de fond */
+}
+
+.card {
+    background-color: #fffff0; /* Couleur blanche légèrement teintée */
+    border: 2px solid #d68b7f; /* Bordure assortie */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 50%;
+    max-width: 600px;
+}
+
+.confirm-button {
+    background-color: #d68b7f;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+}
+
+.confirm-button .pi-home {
+    margin-right: 8px; /* Espace entre l'icône et le texte */
+}
