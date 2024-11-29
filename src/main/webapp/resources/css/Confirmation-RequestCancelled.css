@@ -1,0 +1,30 @@
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #fff7f0;
+}
+
+.card {
+    background-color: #fffff0;
+    border: 2px solid #d68b7f;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 50%;
+    max-width: 600px;
+}
+
+.confirm-button {
+    background-color: #d68b7f;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.confirm-button .pi-home {
+    margin-right: 8px;
+}
