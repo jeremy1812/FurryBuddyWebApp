@@ -9,10 +9,8 @@
 
 <ui:composition template="templates/PetOwnerTemplate.xhtml">
 
-    <ui:define name="title">PetOwner | Profile</ui:define>
-
-<!--    TODO petowner name from PetOwnerBean-->
-    <ui:define name="section-title"> Your Profile</ui:define>
+    <ui:define name="title">New advertisement</ui:define>
+    <ui:define name="section-title"> New advertisement form</ui:define>
 
     <ui:define name="section-content">
         <p:outputLabel for="@next" value="Pet Information" style="font-size: 14px; font-weight: bold;" />
@@ -22,73 +20,87 @@
             <br/>
             <p:inputText id="name" value="#{advertisementBean.pet.name}" required="true"
                          requiredMessage="Pet name is required.">
-                <p:ajax event="blur" update="addAdvertisementForm" />
             </p:inputText>
-            <p:message for="name" display="text" />
+            <p:message for="name" id="nameMessage" display="text" />
             <br/>
 
             <!-- Species -->
             <p:outputLabel for="@next" value="Species" style="font-size: 12px;" /><br/>
-            <p:inputText id="species" value="#{advertisementBean.pet.species}" />
+            <p:inputText id="species" value="#{advertisementBean.pet.species}" required="true"
+                         requiredMessage="Species is required." />
+            <p:message for="species" />
             <br/>
 
             <!-- Breed -->
             <p:outputLabel for="@next" value="Breed" style="font-size: 12px;" /><br/>
-            <p:inputText id="breed" value="#{advertisementBean.pet.breed}" />
+            <p:inputText id="breed" value="#{advertisementBean.pet.breed}" required="true"
+                         requiredMessage="Breed is required." />
+            <p:message for="breed" />
             <br/>
 
             <!-- Age -->
             <p:outputLabel for="@next" value="Age (Years)" style="font-size: 12px;" /><br/>
-            <p:inputText id="age" value="#{advertisementBean.pet.age}" type="number" />
+            <p:inputText id="age" value="#{advertisementBean.pet.age}" type="number" required="true"
+                         requiredMessage="Age is required." />
+            <p:message for="age" />
             <br/>
 
             <!-- Gender -->
             <p:outputLabel for="@next" value="Gender" style="font-size: 12px;" /><br/>
-            <p:selectOneMenu id="gender" value="#{advertisementBean.pet.gender}">
+            <p:selectOneMenu id="gender" value="#{advertisementBean.pet.gender}" required="true"
+                             requiredMessage="Gender is required.">
                 <f:selectItem itemLabel="Select Gender" itemValue="" />
                 <f:selectItem itemLabel="Male" itemValue="MALE" />
                 <f:selectItem itemLabel="Female" itemValue="FEMALE" />
             </p:selectOneMenu>
+            <p:message for="gender" />
             <br/>
 
             <!-- Price -->
             <p:outputLabel for="@next" value="Price (CHF)" style="font-size: 12px;" /><br/>
-            <p:inputText id="price" value="#{advertisementBean.pet.price}" type="number" />
+            <p:inputText id="price" value="#{advertisementBean.pet.price}" type="number" required="true"
+                         requiredMessage="Price is required." />
+            <p:message for="price" />
             <br/>
 
             <!-- Neutered -->
             <p:outputLabel for="@next" value="Neutered" style="font-size: 12px;" /><br/>
-            <p:selectBooleanCheckbox id="neutered" value="#{advertisementBean.pet.neutered}" />
+            <p:selectBooleanCheckbox id="neutered" value="#{advertisementBean.pet.neutered}" required="true"
+                                     requiredMessage="Please specify if the pet is neutered." />
+            <p:message for="neutered" />
             <br/>
 
             <!-- Vaccinated -->
             <p:outputLabel for="@next" value="Vaccinated" style="font-size: 12px;" /><br/>
-            <p:selectBooleanCheckbox id="vaccinated" value="#{advertisementBean.pet.vaccinated}" />
-
+            <p:selectBooleanCheckbox id="vaccinated" value="#{advertisementBean.pet.vaccinated}" required="true"
+                                     requiredMessage="Please specify if the pet is vaccinated." />
+            <p:message for="vaccinated" />
             <p:separator />
 
             <!-- Location Information -->
             <p:outputLabel for="@next" value="Location Information" style="font-size: 14px; font-weight: bold;" />
-            <br/>
+<!--            <br/>-->
 
             <!-- Town -->
             <p:outputLabel for="@next" value="Town" style="font-size: 12px;" /><br/>
             <p:inputText id="town" value="#{advertisementBean.location.town}" required="true"
                          requiredMessage="Town is required.">
-                <p:ajax event="blur" update="addAdvertisementForm" />
             </p:inputText>
-            <p:message for="town" display="text" />
-            <br/>
+            <p:message for="town" id="townMessage" display="text" />
+<!--            <br/>-->
 
             <!-- Postal Code -->
             <p:outputLabel for="@next" value="Postal Code" style="font-size: 12px;" /><br/>
-            <p:inputText id="postalCode" value="#{advertisementBean.location.postalCode}" />
-            <br/>
+            <p:inputText id="postalCode" value="#{advertisementBean.location.postalCode}" required="true"
+                         requiredMessage="Postal code is required." />
+            <p:message for="postalCode" />
+<!--            <br/>-->
 
             <!-- Address -->
             <p:outputLabel for="@next" value="Address" style="font-size: 12px;" /><br/>
-            <p:inputText id="address" value="#{advertisementBean.location.address}" />
-
+            <p:inputText id="address" value="#{advertisementBean.location.address}" required="true"
+                         requiredMessage="Address is required." />
+            <p:message for="address" />
             <p:separator />
 
             <!-- Compatibility -->
@@ -97,28 +109,38 @@
 
             <!-- Compatible with Kids -->
             <p:outputLabel for="@next" value="Compatible with Kids" style="font-size: 12px;" /><br/>
-            <p:selectBooleanCheckbox id="compatibleWithKids" value="#{advertisementBean.pet.compatibleWithKids}" />
+            <p:selectBooleanCheckbox id="compatibleWithKids" value="#{advertisementBean.pet.compatibleWithKids}" required="true"
+                                     requiredMessage="Please specify if the pet is compatible with kids." />
+            <p:message for="compatibleWithKids" />
             <br/>
 
             <!-- Compatible with Families -->
             <p:outputLabel for="@next" value="Compatible with Families" style="font-size: 12px;" /><br/>
-            <p:selectBooleanCheckbox id="compatibleWithFamilies" value="#{advertisementBean.pet.compatibleWithFamilies}" />
+            <p:selectBooleanCheckbox id="compatibleWithFamilies" value="#{advertisementBean.pet.compatibleWithFamilies}" required="true"
+                                     requiredMessage="Please specify if the pet is compatible with families." />
+            <p:message for="compatibleWithFamilies" />
             <br/>
 
             <!-- Compatible with Other Animals -->
             <p:outputLabel for="@next" value="Compatible with Other Animals" style="font-size: 12px;" /><br/>
-            <p:selectBooleanCheckbox id="compatibleWithOtherAnimals" value="#{advertisementBean.pet.compatibleWithOtherAnimals}" />
-
+            <p:selectBooleanCheckbox id="compatibleWithOtherAnimals" value="#{advertisementBean.pet.compatibleWithOtherAnimals}" required="true"
+                                     requiredMessage="Please specify if the pet is compatible with other animals." />
+            <p:message for="compatibleWithOtherAnimals" />
             <p:separator />
 
             <!-- Image Upload -->
             <p:outputLabel for="@next" value="Upload an Image" style="font-size: 12px;" /><br/>
-            <p:fileUpload id="imageUpload" value="#{advertisementBean.image}" mode="simple" />
+            <p:fileUpload id="imageUpload" value="#{advertisementBean.image}" mode="simple"/>
+            <p:message for="imageUpload" />
 
+            <p:separator />
             <!-- Submit and Cancel Buttons -->
-            <p:commandButton value="Post Advertisement" action="#{advertisementBean.addAdvertisement}" update=":addAdvertisementForm" />
-            <p:commandButton value="Cancel" onclick="window.location.href='getAllAdvertisements.xhtml';" />
+            <p:commandButton value="Post Advertisement" action="#{advertisementBean.addAdvertisement}" />
+            <p:commandButton value="Cancel" onclick="window.location.href='MyAdvertisement.xhtml';" />
         </h:form>
+        <p:messages id="messages" globalOnly="true" showDetail="true" autoUpdate="true" />
+
     </ui:define>
 
-</ui:composition></html>
+</ui:composition>
+</html>

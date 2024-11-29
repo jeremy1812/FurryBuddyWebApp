@@ -4,11 +4,14 @@ import ch.unil.doplab.demo.FurryBuddyService;
 import ch.unil.furrybuddy.domain.Advertisement;
 import ch.unil.furrybuddy.domain.AdoptionRequest;
 import ch.unil.furrybuddy.domain.PetOwner;
+import ch.unil.furrybuddy.domain.Location;
+import ch.unil.furrybuddy.domain.Pet;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,10 +38,25 @@ public class PetOwnerBean implements Serializable {
     @Inject
     private FurryBuddyService theService;
 
+    @Inject
+    private LoginBean loginBean;
+
+    public PetOwnerBean() {
+        init();
+    }
+
+    public void init() {
+        uuid = null;
+    }
+
+    public UUID getPetOwnerID(){
+        return loginBean.getLoggedInUserId();
+    }
+
     // Méthode pour charger les données du propriétaire
     public void loadPetOwnerData() {
         if (uuid != null) {
-            PetOwner petOwner = theService.getPetOwner(uuid.toString());
+            PetOwner petOwner = theService.getPetOwner(uuid);
             if (petOwner != null) {
                 this.firstName = petOwner.getFirstName();
                 this.lastName = petOwner.getLastName();
@@ -48,10 +66,12 @@ public class PetOwnerBean implements Serializable {
     }
 
     // Charger les publicités postées
-    public void loadMyAdvertisements() {
+    public List<Advertisement> loadMyAdvertisements() {
+        UUID userId = loginBean.getLoggedInUserId();
         if (uuid != null) {
-            myAdvertisements = theService.getAdvertisementsByPetOwner(uuid);
+            myAdvertisements = theService.getPetOwner(userId).getAdvertisements();
         }
+        return Collections.emptyList();
     }
 
     // Charger les demandes reçues pour ses publicités
@@ -64,7 +84,7 @@ public class PetOwnerBean implements Serializable {
     // Vérifie si des modifications ont été faites
     public void checkIfChanged() {
         if (uuid != null) {
-            PetOwner petOwner = theService.getPetOwner(uuid.toString());
+            PetOwner petOwner = theService.getPetOwner(uuid);
             boolean firstNameChanged = !this.firstName.equals(petOwner.getFirstName());
             boolean lastNameChanged = !this.lastName.equals(petOwner.getLastName());
             boolean emailChanged = !this.email.equals(petOwner.getEmail());
@@ -75,7 +95,7 @@ public class PetOwnerBean implements Serializable {
     // Met à jour les informations du profil
     public void updateProfile() {
         try {
-            PetOwner petOwner = theService.getPetOwner(uuid.toString());
+            PetOwner petOwner = theService.getPetOwner(uuid);
             if (petOwner != null) {
                 petOwner.setFirstName(this.firstName);
                 petOwner.setLastName(this.lastName);
@@ -92,7 +112,7 @@ public class PetOwnerBean implements Serializable {
     // Annule les modifications et recharge les données depuis le service
     public void undoChanges() {
         if (uuid != null) {
-            PetOwner petOwner = theService.getPetOwner(uuid.toString());
+            PetOwner petOwner = theService.getPetOwner(uuid);
             if (petOwner != null) {
                 this.firstName = petOwner.getFirstName();
                 this.lastName = petOwner.getLastName();
@@ -105,7 +125,7 @@ public class PetOwnerBean implements Serializable {
     // Change le mot de passe du propriétaire
     public void changePassword() {
         try {
-            PetOwner petOwner = theService.getPetOwner(uuid.toString());
+            PetOwner petOwner = theService.getPetOwner(uuid);
             if (petOwner != null && petOwner.getPassword().equals(this.currentPassword)) {
                 petOwner.setPassword(this.newPassword); // Remplacez par un hash sécurisé si nécessaire
                 theService.setPetOwner(petOwner);

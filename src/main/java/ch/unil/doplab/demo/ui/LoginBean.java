@@ -1,6 +1,7 @@
 package ch.unil.doplab.demo.ui;
 
 import ch.unil.doplab.demo.FurryBuddyService;
+import ch.unil.furrybuddy.domain.User;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -17,7 +18,8 @@ public class LoginBean implements Serializable {
 
     private String email;
     private String password;
-    private String role; // petowner or adopter
+    private String selectedRole; // petowner or adopter
+    private User.Role role;
 
     @Inject
     FurryBuddyService furryBuddyService; // Service for authentication and data fetching
@@ -35,22 +37,25 @@ public class LoginBean implements Serializable {
     public void reset() {
         email = null;
         password = null;
+        selectedRole = null;
         role = null;
     }
 
      public String login() {
-        var uuid = furryBuddyService.authenticate(email, password, role); // Authenticate user
+        var uuid = furryBuddyService.authenticate(email, password, selectedRole); // Authenticate user
         var session = getSession(true);
         if (uuid != null) {
             session.setAttribute("uuid", uuid);
             session.setAttribute("email", email);
-            session.setAttribute("role", role);
-            switch (role) {
+            session.setAttribute("role", selectedRole);
+            switch (selectedRole) {
                 case "petOwner":
+                    this.role = User.Role.PET_OWNER;
                     petOwnerBean.setUUID(uuid);
                     petOwnerBean.loadPetOwnerData(); // Load data specific to the pet owner
-                    return "GetAllAdvertisements?faces-redirect=true"; // Redirect to pet owner dashboard
+                    return "MyAdvertisement?faces-redirect=true"; // Redirect to pet owner dashboard
                 case "adopter":
+                    this.role = User.Role.ADOPTER;
                     adopterBean.setUUID(uuid);
                     adopterBean.loadAdopterData(); // Load data specific to the adopter
                     return "GetAllAdvertisements?faces-redirect=true"; // Redirect to adopter dashboard
@@ -75,12 +80,12 @@ public class LoginBean implements Serializable {
         return "Login?faces-redirect=true";
     }
 
-    public String getRole() {
-        return role;
+    public String getSelectedRole() {
+        return selectedRole;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setSelectedRole(String selectedRole) {
+        this.selectedRole = selectedRole;
     }
 
     public String getEmail() {
@@ -99,6 +104,22 @@ public class LoginBean implements Serializable {
         this.password = password;
     }
 
+    public User.Role getRole() {
+        return role;
+    }
+    public void setRole(User.Role role) {
+        this.role = role;
+    }
+
+    public boolean isPetOwner() {
+        return User.Role.PET_OWNER.equals(role);
+    }
+
+    public boolean isAdopter() {
+        return User.Role.ADOPTER.equals(role);
+    }
+
+
     public static HttpSession getSession(boolean create) {
         var facesContext = FacesContext.getCurrentInstance();
         if (facesContext == null) {
@@ -109,6 +130,18 @@ public class LoginBean implements Serializable {
             return null;
         }
         return (HttpSession) externalContext.getSession(create);
+    }
+
+    public UUID getLoggedInUserId() {
+        if (role == null){
+            return null;
+        }
+
+        HttpSession session = LoginBean.getSession(false); // Get current session
+        if (session != null) {
+            return (UUID) session.getAttribute("uuid"); // Assumes the UUID is stored in the session
+        }
+        return null;
     }
 
     public static void invalidateSession() {

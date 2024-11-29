@@ -3,7 +3,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5); /* Fond transparent */
+    background-color: #fff7f0 /* Fond transparent */
 }
 
 .modal-card {
@@ -29,13 +29,13 @@
 
 textarea {
     width: 100%;
-    border: 1px solid #d68b7f;
+    border: 1px solid #A94A49;
     border-radius: 5px;
     padding: 10px;
 }
 
 .ui-button {
-    background-color: #d68b7f;
+    background-color: #A94A49;
     color: white;
     border: none;
     border-radius: 5px;
