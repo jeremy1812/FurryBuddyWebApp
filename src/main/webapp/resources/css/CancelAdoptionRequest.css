@@ -3,12 +3,13 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #fff7f0; /* Couleur de fond */
+    background-color: #FFFFFF; /* Couleur de fond */
+
 }
 
 .card {
-    background-color: #fffff0; /* Fond clair pour la carte */
-    border: 2px solid #d68b7f; /* Bordure assortie */
+    background-color: #FBFDEF; /* Fond clair pour la carte */
+    border: 2px solid #A94A49; /* Bordure assortie */
     padding: 20px;
     border-radius: 10px;
     text-align: center;
@@ -17,7 +18,7 @@
 }
 
 .confirm-button {
-    background-color: #d68b7f; /* Bouton rouge pour confirmer */
+    background-color: #A94A49; /* Bouton rouge pour confirmer */
     color: white;
     border: none;
     padding: 10px 20px;
