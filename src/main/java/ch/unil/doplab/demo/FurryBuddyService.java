@@ -365,6 +365,33 @@ public class FurryBuddyService {
                 .request(MediaType.APPLICATION_JSON)
                 .get(new GenericType<List<AdoptionRequest>>() {});
     }
+    public List<AdoptionRequest> getRequestsForAdopter(String adopterName) {
+        return adoptionRequestTarget
+                .path("byAdopter")
+                .path(adopterName)
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<AdoptionRequest>>() {});
+    }
+
+    public boolean updateRequestStatus(AdoptionRequest adoptionRequest) throws Exception {
+        var response = adoptionRequestTarget
+                .path(adoptionRequest.getRequestID().toString())
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(adoptionRequest, MediaType.APPLICATION_JSON));
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return true;
+        } else {
+            ExceptionDescription description = response.readEntity(ExceptionDescription.class);
+            try {
+                Class<?> exceptionClass = Class.forName(description.getType());
+                Constructor<?> constructor = exceptionClass.getConstructor(String.class);
+                Exception exception = (Exception) constructor.newInstance(description.getMessage());
+                throw exception;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
 
 

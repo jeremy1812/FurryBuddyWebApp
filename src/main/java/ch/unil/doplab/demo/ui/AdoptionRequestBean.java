@@ -1,9 +1,11 @@
 package ch.unil.doplab.demo.ui;
 
 import ch.unil.furrybuddy.domain.AdoptionRequest;
+import ch.unil.doplab.demo.FurryBuddyService;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
@@ -13,17 +15,39 @@ import java.util.List;
 @Named
 @SessionScoped
 public class AdoptionRequestBean implements Serializable {
+    private static final long serialVersionUID = 1L;
 
+    // Champs pour les détails d'une demande
     private String adopterName;
     private String petName;
     private String petType;
     private Date requestDate;
     private String status;
     private String requestMessage;
-    private AdvertisementBean currentAdvertisement;
 
+    private List<AdoptionRequest> requests; // Liste des demandes d'adoption
+    private AdoptionRequest selectedRequest; // Requête sélectionnée
 
-    // Getters et Setters pour toutes les propriétés
+    @Inject
+    private FurryBuddyService service; // Service pour interagir avec le backend
+
+    // Getters et Setters
+    public List<AdoptionRequest> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<AdoptionRequest> requests) {
+        this.requests = requests;
+    }
+
+    public AdoptionRequest getSelectedRequest() {
+        return selectedRequest;
+    }
+
+    public void setSelectedRequest(AdoptionRequest selectedRequest) {
+        this.selectedRequest = selectedRequest;
+    }
+
     public String getAdopterName() {
         return adopterName;
     }
@@ -64,48 +88,48 @@ public class AdoptionRequestBean implements Serializable {
         this.status = status;
     }
 
-    public String getRequestMessage() { // Getter for requestMessage
+    public String getRequestMessage() {
         return requestMessage;
     }
 
-    public void setRequestMessage(String requestMessage) { // Setter for requestMessage
+    public void setRequestMessage(String requestMessage) {
         this.requestMessage = requestMessage;
     }
-    public AdvertisementBean getCurrentAdvertisement() {
-        return currentAdvertisement;
+
+    // Chargement des requêtes pour un adoptant
+    public void loadRequestsForAdopter() {
+        try {
+            // Exemple : Charger les requêtes depuis le service
+            this.requests = service.getRequestsForAdopter(adopterName);
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to load requests."));
+        }
     }
 
-    public void setCurrentAdvertisement(AdvertisementBean currentAdvertisement) {
-        this.currentAdvertisement = currentAdvertisement;
+    // Annuler une demande
+    public String cancelRequest(AdoptionRequest request) {
+        try {
+            request.setStatus(AdoptionRequest.Status.valueOf("Cancelled"));
+            service.updateRequestStatus(request); // Exemple de mise à jour
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Request cancelled successfully."));
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to cancel request."));
+        }
+        return null; // Reste sur la même page
     }
 
-    // Méthodes métier
-    public String submitRequest() {
-        this.status = "Submitted";
-        this.requestDate = new Date();
-
-        // Mock sending request, log pet name
-        System.out.println("Request sent for pet: " + getPetName());
-
-        return "ConfirmationRequestSent.xhtml?faces-redirect=true";
+    // Voir les détails d'une demande
+    public String viewRequestDetails(AdoptionRequest request) {
+        this.selectedRequest = request;
+        return "ViewRequestDetails.xhtml?faces-redirect=true";
     }
 
-    public String cancelRequest() {
-        this.status = "Cancelled";
-        // Utilise le Flash Scope pour persister le message après redirection
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully cancelled."));
-        return "CancelAdoptionRequest.xhtml?faces-redirect=true";
+    // Modifier une demande
+    public String modifyRequest(AdoptionRequest request) {
+        this.selectedRequest = request;
+        return "ModifyRequest.xhtml?faces-redirect=true";
     }
-
-    public String updateRequestStatus() {
-        this.status = "PENDING";// à revoir;
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Adoption request successfully cancelled."));
-        return "CancelAdoptionRequest.xhtml?faces-redirect=true";
-    }
-
 }
-
-
