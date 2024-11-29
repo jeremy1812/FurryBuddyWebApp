@@ -9,40 +9,42 @@
 
 <h:head>
     <h:outputStylesheet name="css/styles.css" />
-    <title>Create Adoption Request</title>
+    <title>Make an Adoption Request</title>
 </h:head>
 <h:body>
-    <!-- Contenu principal de la page -->
-    <h:form id="mainPageForm">
-        <div>
-            <h1>Pet Adoption</h1>
-            <p>Choose an animal to adopt and make your request!</p>
-            <p:commandButton value="Open Adoption Request Form"
-                             onclick="PF('requestDialog').show(); return false;" />
-        </div>
-    </h:form>
+    <!-- Conteneur principal -->
+    <div class="modal-container">
+        <!-- Carte modale -->
+        <div class="modal-card">
+            <!-- Bouton pour fermer (croix) -->
+            <button class="close-button" onclick="window.history.back();">✕</button>
 
-    <!-- Fenêtre modale -->
-    <p:dialog id="requestDialog" widgetVar="requestDialog" modal="true" header="Make an adoption request" draggable="false" closable="true" width="600px">
-        <h:form id="requestForm">
-            <h:outputLabel value="Introduce yourself :"/>
-            <p:inputTextarea id="request"
-                             value="#{bean.requestMessage}"
-                             rows="5"
-                             cols="50"
-                             placeholder="Briefly describe what inspires you to choose this animal and feel free to ask any questions you may have! (minimum 20 characters)" />
-            <br/>
-            <p:commandButton id="sendRequest" value="Send my request"
-                 action="#{dfLevel1View.submitRequest}"
-                 update=":confirmDialog"
-                 oncomplete="PF('confirmDialogWidget').show();">
-            </p:commandButton>
-            <p:confirmDialog id="confirmDialog" widgetVar="confirmDialogWidget" header="Confirmation" closable="false">
-                <p:outputLabel value="Your request has been successfully sent!" />
-                <p:commandButton value="OK" onclick="PF('confirmDialogWidget').hide();" type="button" />
-            </p:confirmDialog>
-        </h:form>
-    </p:dialog>
+            <!-- Titre principal -->
+            <h1>Make an adoption request</h1>
+
+            <!-- Formulaire de requête -->
+            <h:form id="requestForm">
+                <h:outputLabel value="Briefly describe what inspires you to choose this pet and feel free to ask any questions you may have! (minimum 20 characters)" for="requestMessage" />
+                <p:inputTextarea id="requestMessage"
+                                 value="#{adoptionRequestBean.requestMessage}"
+                                 rows="5"
+                                 cols="50"
+                                 placeholder="Enter your request here..."
+                                 required="true"
+                                 requiredMessage="This field is required."
+                                 validatorMessage="Your request must have at least 20 characters.">
+                    <f:validateLength minimum="20" />
+                </p:inputTextarea>
+                <p:message for="requestMessage" />
+
+                <!-- Bouton pour envoyer -->
+                <p:commandButton value="Send my request"
+                                 action="#{adoptionRequestBean.submitRequest}"
+                                 process="@form" />
+
+            </h:form>
+        </div>
+    </div>
 </h:body>
 
 </html>

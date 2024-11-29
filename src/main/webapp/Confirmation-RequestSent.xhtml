@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <h:outputStylesheet name="css/styles.css" />
+    <title>Request confirmation</title>
+</h:head>
+<h:body>
+    <div class="card-container">
+        <div class="card">
+            <h1>Request sent successfully!</h1>
+            <p>
+                Your adoption request for ["Pet Name"] has been successfully sent to the  owner.
+                We hope you receive a positive response soon !
+            </p>
+            <h:form>
+                <p:commandButton value="Home"
+                                 action="home.xhtml?faces-redirect=true"
+                                 styleClass="confirm-button"
+                                 icon="pi pi-home" />
+            </h:form>
+        </div>
+    </div>
+</h:body>
+
+</html>

@@ -19,18 +19,19 @@
             <p>
                 Are you certain you want to cancel your request?
                 This action cannot be undone, and you will need to submit a new adoption request if you still wish to adopt this pet.
-                If you only need to make changes to your request, you can do so from the request's page.
             </p>
 
             <!-- Formulaire de confirmation -->
             <h:form id="cancelRequest">
                 <p:commandButton value="Confirm my choice"
-                                 action="confirmation.xhtml?faces-redirect=true"
+                                 action="Confirmation-RequestCancelled.xhtml?faces-redirect=true"
                                  styleClass="confirm-button"
                                  icon="pi pi-check" />
 
-                <p:commandButton value="Go back" action="#{confirmView.goBack}"
-                                 styleClass="cancel-button" icon="pi pi-times" />
+                <p:commandButton value="Go back"
+                                 action="MyRequest.xhtml?faces-redirect=true"
+                                 styleClass="cancel-button"
+                                 icon="pi pi-times" />
             </h:form>
         </div>
     </div>

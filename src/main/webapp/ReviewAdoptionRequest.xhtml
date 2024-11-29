@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <h:outputStylesheet name="css/styles.css" />
+    <title>Review Adoption Request</title>
+</h:head>
+<h:body>
+    <!-- Conteneur principal -->
+    <div class="card-container">
+        <div class="card">
+
+            <button class="close-button" onclick="history.back();">✕</button>
+
+            <h1>Review #{adopterBean.adopterName}'s adoption request</h1>
+            <p>#{adopterBean.adopterName} wants to adopt #{adoptionRequestBean.petName}.</p>
+
+            <textarea readonly class="request-text" rows="5" cols="40">
+                #{adoptionRequestBean.requestText}
+            </textarea>
+
+            <!-- Formulaire de confirmation -->
+            <div class="action-buttons">
+
+                <h:form id="acceptRequest">
+                    <p:commandButton value="Accept the request"
+                                     action="acceptRequestConfirmation.xhtml?faces-redirect=true"
+                                     styleClass="confirm-button"
+                                     icon="pi pi-check" />
+
+                    <p:commandButton value="Reject the request"
+                                     action="rejectRequestConfirmation.xhtml?faces-redirect=true"
+                                     styleClass="confirm-button"
+                                     icon="pi pi-times" />
+                </h:form>
+            </div>
+        </div>
+    </div>
+</h:body>
+
+</html>

@@ -1,7 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
@@ -25,11 +24,11 @@
                             <p:outputLabel value="Role"/>
                         </td>
                         <td style="text-align:center">
-                            <p:selectOneRadio id="selectUserRole" value="#{registerBean.role}"
+                            <p:selectOneRadio id="selectedRole" value="#{registerBean.selectedRole}"
                                               required="true"
-                                              requiredMessage="You must register as PetOwner or Adopter.">
-                                <f:selectItem itemLabel="Adopter" itemValue="adopter"/>
-                                <f:selectItem itemLabel="Pet Owner" itemValue="petOwner"/>
+                                              requiredMessage="You must register as Pet Owner or Adopter.">
+                                <f:selectItem itemLabel="Adopter" itemValue="Adopter"/>
+                                <f:selectItem itemLabel="Pet Owner" itemValue="PetOwner"/>
                             </p:selectOneRadio>
                         </td>
                     </tr>
