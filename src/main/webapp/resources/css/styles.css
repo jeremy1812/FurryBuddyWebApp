@@ -1,7 +1,7 @@
 /* Général */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    background-color: #D19B9BFF;
     margin: 0;
     padding: 0;
 }
@@ -31,7 +31,11 @@ p:panel {
 p:commandButton {
     margin-top: 20px;
 }
-
+/* Appliquer une couleur rose au survol des boutons radio */
+.ui-radiobutton .ui-radiobutton-box.ui-state-hover {
+    background-color: #f4f4f4; /* Couleur rose clair */
+    border-color: #e886b4;    /* Bordure rose foncé */
+}
 /* Texte de connexion */
 .login-text {
     margin-top: 20px;
@@ -40,12 +44,12 @@ p:commandButton {
 }
 
 .login-text a {
-    color: #007bff;
+    color: #e886a2;
     text-decoration: none;
     font-weight: bold;
 }
 
 .login-text a:hover {
-    color: #0056b3;
+    color: #dc5f9d;
     text-decoration: underline;
 }
