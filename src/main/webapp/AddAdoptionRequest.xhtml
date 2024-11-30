@@ -12,6 +12,7 @@
     <title>Make an Adoption Request</title>
 </h:head>
 <h:body>
+    <f:viewAction action="#{adoptionRequestBean.loadAdvertisementFromQuery()}"/>
     <!-- Conteneur principal -->
     <div class="modal-container">
         <!-- Carte modale -->
@@ -39,8 +40,11 @@
 
                 <!-- Bouton pour envoyer -->
                 <p:commandButton value="Send my request"
-                                 action="#{adoptionRequestBean.submitRequest}"
-                                 process="@form" />
+                                 action="#{adoptionRequestBean.submitRequest()}"
+                                 oncomplete="window.location.href='Confirmation-RequestSent.xhtml'"
+                                 process="@form"
+                                 update="growl" />
+                <p:growl id="growl" showDetail="true" life="3000" />
 
             </h:form>
         </div>
