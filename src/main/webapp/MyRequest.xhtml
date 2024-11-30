@@ -13,34 +13,33 @@
     <ui:define name="title">FurryBuddy - My Adoption Requests</ui:define>
     <ui:define name="section-title">My Adoption Requests</ui:define>
 
-
-
     <!-- Contenu principal -->
     <ui:define name="section-content">
-        <f:event type="preRenderView" listener="#{adoptionRequestBean.loadRequestsForAdopter}" />
+        <f:event type="preRenderView" listener="#{adopterBean.loadMyRequests()}" />
 
         <!-- Tableau des demandes d'adoption -->
-        <p:dataTable id="myRequests" value="#{adoptionRequestBean.requests}" var="request" rowKey="#{request.id}">
+        <p:dataTable id="myRequests" value="#{adopterBean.requests}" var="adoptionRequest">
             <p:column headerText="Pet Name">
-                <h:outputText value="#{request.advertisement.pet.name}" />
+                <h:outputText value="#{adoptionRequest.advertisement.pet.name}" />
             </p:column>
-            <p:column headerText="Pet Owner Name">
-                <h:outputText value="#{request.advertisement.petOwner.name}" />
-            </p:column>
+<!--            <p:column headerText="Pet Owner Name">-->
+<!--                <h:outputText value="#{request.advertisement.petOwnerName}" />-->
+<!--            </p:column>-->
             <p:column headerText="Status">
-                <h:outputText value="#{request.status}" />
+                <h:outputText value="#{adoptionRequest.status}" />
             </p:column>
-            <p:column headerText="Actions">
-                <p:commandButton value="View Details" action="#{adoptionRequestBean.viewRequestDetails(request)}" />
-                <p:commandButton value="Modify" action="#{adoptionRequestBean.modifyRequest(request)}" />
-                <p:commandButton value="Cancel" action="#{adoptionRequestBean.cancelRequest(request)}"
-                                 update="myRequests" />
+            <p:column headerText="Actions" rendered="#{adoptionRequest.status eq 'PENDING'}">
+                <p:commandButton value="View Ad" actionListener="#{advertisementBean.viewDetails(adoptionRequest.advertisement)}" />
+                <p:commandButton value="Modify" actionListener="#{adoptionRequestBean.modifyRequest(adoptionRequest)}" />
+<!--                <p:commandButton value="Cancel" actionListener="#{adoptionRequestBean.cancelAdoptionRequest(adoptionRequest)}"-->
+<!--                                 update="myRequests" />-->
+                <p:commandButton value="Cancel"
+                                 action="#{adoptionRequestBean.cancelAdoptionRequest(adoptionRequest)}"
+                                 oncomplete="window.location.href='CancelAdoptionRequest.xhtml'"
+                                 update="myRequests"
+                                 process="@form"/>
             </p:column>
         </p:dataTable>
-
-        <!-- Message en cas d'absence de requêtes -->
-        <h:outputText value="You have not submitted any adoption requests yet."
-                      rendered="#{empty adoptionRequestBean.requests}" />
     </ui:define>
 
 </ui:composition>
