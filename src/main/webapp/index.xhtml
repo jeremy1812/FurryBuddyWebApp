@@ -2,8 +2,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:p="http://primefaces.org/ui">
 <h:head>
     <h:outputStylesheet name="css/styles.css" />
     <title>Welcome to FurryBuddy</title>
@@ -24,14 +23,10 @@
                     <h:outputText value="Choose an option:" style="font-weight:bold; font-size:18px"/>
                     <br/>
                     <br/>
-                    <!-- Link Styled As Button -->
                     <p:commandButton value="Log In" onclick="window.location.href='Login.xhtml'"/>
-<!--                    <h:link value="Log In" outcome="Login.xhtml" styleClass="button-style"/>-->
                     <br/>
                     <br/>
-                    <!-- Link Styled As Button -->
                     <p:commandButton value="Sign Up" onclick="window.location.href='Register.xhtml'"/>
-<!--                    <h:link value="Sign Up" outcome="Register.xhtml" styleClass="button-style"/>-->
                 </h:form>
             </p:panel>
         </div>
