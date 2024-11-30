@@ -47,9 +47,6 @@
                 <p:panel header="Breed">
                     <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.breed}" />
                 </p:panel>
-                <p:panel header="Color">
-                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.color}" />
-                </p:panel>
                 <p:panel header="Neutered">
                     <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.neutered ? 'Yes' : 'No'}" />
                 </p:panel>
@@ -81,5 +78,6 @@
 
         </p:panel>
     </ui:define>
+
 </ui:composition>
 </html>

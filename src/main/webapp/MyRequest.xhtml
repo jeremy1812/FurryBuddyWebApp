@@ -28,15 +28,11 @@
             <p:column headerText="Status">
                 <h:outputText value="#{adoptionRequest.status}" />
             </p:column>
-            <p:column headerText="Actions" rendered="#{adoptionRequest.status eq 'PENDING'}">
+            <p:column headerText="Actions" rendered="#{adoptionRequest != null and adoptionRequest.status eq 'PENDING'}">
                 <p:commandButton value="View Ad" actionListener="#{advertisementBean.viewDetails(adoptionRequest.advertisement)}" />
-                <p:commandButton value="Modify" actionListener="#{adoptionRequestBean.modifyRequest(adoptionRequest)}" />
-<!--                <p:commandButton value="Cancel" actionListener="#{adoptionRequestBean.cancelAdoptionRequest(adoptionRequest)}"-->
-<!--                                 update="myRequests" />-->
                 <p:commandButton value="Cancel"
                                  action="#{adoptionRequestBean.cancelAdoptionRequest(adoptionRequest)}"
                                  oncomplete="window.location.href='CancelAdoptionRequest.xhtml'"
-                                 update="myRequests"
                                  process="@form"/>
             </p:column>
         </p:dataTable>

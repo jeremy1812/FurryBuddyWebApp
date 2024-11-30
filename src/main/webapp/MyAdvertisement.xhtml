@@ -33,7 +33,7 @@
             </p:column>
             <p:column headerText="Actions">
                 <h:form>
-                    <p:commandButton value="Edit" action="#{advertisementBean.viewDetails(advertisement)}" />
+                    <p:commandButton value="Edit" action="#{advertisementBean.editAdvertisement(advertisement)}" />
                     <!-- Delete Ad -->
                     <p:confirmDialog id="confirmDeleteDialog" header="Confirm Deletion" widgetVar="confirmDeleteDialog"
                                      message="Are you sure you want to delete this advertisement? This action cannot be undone.">

@@ -181,14 +181,17 @@ public class AdvertisementBean extends Advertisement implements Serializable {
         this.selectedAdvertisement = selectedAdvertisement;
     }
 
+    public boolean isChanged(){return changed;}
+
     public String getDialogMessage() {
         return dialogMessage;
     }
 
     public void loadAllAdvertisements() {
-        allAdvertisements = theService.getAllAdvertisements();
-        filteredAdvertisements = new ArrayList<>(allAdvertisements);
+//        allAdvertisements = theService.getAllAdvertisements();
+        filteredAdvertisements = new ArrayList<>(theService.getAllAdvertisements());
     }
+
 
     public List<Advertisement> getAllAdvertisements() {
         return allAdvertisements;
@@ -204,7 +207,7 @@ public class AdvertisementBean extends Advertisement implements Serializable {
         Advertisement advertisement = new Advertisement(
                 pet,
                 loginBean.getLoggedInUserId(),
-                "toto", // TODO
+                pet.getDescription(),
                 location,
                 Status.AVAILABLE
         );
@@ -238,7 +241,6 @@ public class AdvertisementBean extends Advertisement implements Serializable {
         return null;
     }
 
-
     // Method to Delete Advertisement
     public void deleteAdvertisement(Advertisement advertisement) {
         if (advertisement != null && advertisement.getAdvertisementID() != null) {
@@ -268,6 +270,11 @@ public class AdvertisementBean extends Advertisement implements Serializable {
     public String viewDetails(Advertisement ad) {
         this.selectedAdvertisement = ad;
         return "ViewAdvertisement.xhtml?faces-redirect=true";
+    }
+
+    public String editAdvertisement(Advertisement ad) {
+        this.selectedAdvertisement = ad;
+        return "EditAdvertisement.xhtml?faces-redirect=true";
     }
 
     public List<Advertisement> loadPetOwnerAdvertisements() {
@@ -334,8 +341,7 @@ public class AdvertisementBean extends Advertisement implements Serializable {
                 .filter(ad -> matchesCompatibilityFlags(ad.getPet()))
                 .collect(Collectors.toList());
 
-        PrimeFaces.current().ajax().update("advertisementForm");
-
+        log.info("Filtered Advertisements: " + filteredAdvertisements.size());
     }
 
     private boolean matchesCompatibilityFlags(Pet pet) {
@@ -368,5 +374,30 @@ public class AdvertisementBean extends Advertisement implements Serializable {
             return true; // No gender filter applied
         }
         return gender != null && gender.name().equalsIgnoreCase(selectedGender);
+    }
+
+    // Vérifie si des modifications ont été faites
+    public void checkIfChanged() {
+        if (selectedAdvertisement.getAdvertisementID() != null) {
+            Advertisement advertisement = theService.getAdvertisement(selectedAdvertisement.getAdvertisementID());
+            boolean petChanged = !this.pet.equals(advertisement.getPet());
+            boolean locationChanged = !this.location.equals(advertisement.getLocation());
+            this.changed = petChanged || locationChanged;
+        }
+    }
+
+    //modifier une annonce
+    public void updateAdvertisement() {
+        try {
+            Advertisement advertisement = theService.getAdvertisement(selectedAdvertisement.getAdvertisementID());
+            if (advertisement != null) {
+                advertisement.setPet(this.pet);
+                advertisement.setDescription(this.pet.getDescription());
+                this.changed = false;
+                this.dialogMessage = "Advertisement updated successfully.";
+            }
+        } catch (Exception e) {
+            this.dialogMessage = "Error updating advertisement: " + e.getMessage();
+        }
     }
 }

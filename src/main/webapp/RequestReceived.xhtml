@@ -15,37 +15,37 @@
 
     <ui:define name="section-content">
         <!-- Charger les demandes pour les publicités du propriétaire -->
-        <f:event type="preRenderView" listener="#{petOwnerBean.loadReceivedRequests}" />
+        <f:event type="preRenderView" listener="#{petOwnerBean.loadReceivedRequests()}" />
 
         <!-- Tableau des demandes d'adoption -->
         <p:dataTable id="adoptionRequests" value="#{petOwnerBean.receivedRequests}" var="adoptionRequest">
-            <p:column headerText="Advertisement Title">
-                <h:outputText value="#{adoptionRequest.advertisement.title}" />
+            <p:column headerText="Pet">
+                <h:outputText value="#{adoptionRequest.advertisement.pet.name}" />
             </p:column>
             <p:column headerText="Adopter Name">
-                <h:outputText value="#{adoptionRequest.adopter.name}" />
+                <h:outputText value="#{adoptionRequestBean.getAdopterNameDetails(adoptionRequest)}" />
             </p:column>
-            <p:column headerText="Adopter Email">
-                <h:outputLink value="mailto:#{adoptionRequest.adopter.email}">
-                    #{adoptionRequest.adopter.email}
-                </h:outputLink>
+            <p:column headerText="Message">
+                <h:outputText value="#{adoptionRequest.message}">
+                    #{adoptionRequest.message}
+                </h:outputText>
             </p:column>
             <p:column headerText="Status">
                 <h:outputText value="#{adoptionRequest.status}" />
             </p:column>
             <p:column headerText="Actions">
                 <h:form>
-                    <p:commandButton value="Accept" actionListener="#{adoptionRequestBean.acceptRequest(adoptionRequest)}"
+                    <p:commandButton value="Accept" actionListener="#{adoptionRequestBean.acceptAdoptionRequest(adoptionRequest)}"
                                      update="adoptionRequests" rendered="#{adoptionRequest.status eq 'PENDING'}" />
-                    <p:commandButton value="Reject" actionListener="#{adoptionRequestBean.rejectRequest(adoptionRequest)}"
+                    <p:commandButton value="Reject" actionListener="#{adoptionRequestBean.rejectAdoptionRequest(adoptionRequest)}"
                                      update="adoptionRequests" rendered="#{adoptionRequest.status eq 'PENDING'}" />
                 </h:form>
             </p:column>
         </p:dataTable>
 
         <!-- Message en cas d'absence de requêtes -->
-        <h:outputText value="No adoption requests available at the moment."
-                      rendered="#{empty petOwnerBean.receivedRequests}" />
+<!--        <h:outputText value="No adoption requests available at the moment."-->
+<!--                      rendered="#{empty petOwnerBean.receivedRequests}" />-->
     </ui:define>
 
 </ui:composition>

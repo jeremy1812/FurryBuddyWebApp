@@ -13,11 +13,13 @@
     <ui:define name="section-title">All Advertisements</ui:define>
 
     <ui:define name="section-content">
+        <h:outputText value="#{advertisementBean.filteredAdvertisements.size()} Advertisements Found" />
+
         <f:event type="preRenderView" listener="#{advertisementBean.loadAllAdvertisements()}"/>
 
         <!-- Filters -->
         <h:form id="filterForm">
-            <p:toolbar>
+            <p:toolbar style="margin-bottom: 16px; width: 100%;">
                 <p:toolbarGroup>
                     <!-- Species Filter -->
                     <p:selectOneMenu id="filterSpecies" value="#{advertisementBean.selectedSpecies}" style="width:150px">
