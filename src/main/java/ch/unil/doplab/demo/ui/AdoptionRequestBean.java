@@ -1,31 +1,30 @@
 package ch.unil.doplab.demo.ui;
 
-import ch.unil.furrybuddy.domain.AdoptionRequest;
+import ch.unil.furrybuddy.domain.*;
 import ch.unil.doplab.demo.FurryBuddyService;
-import ch.unil.furrybuddy.domain.Advertisement;
-import ch.unil.furrybuddy.domain.PetOwner;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.primefaces.component.log.Log;
+import org.primefaces.PrimeFaces;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.logging.Logger;
 
-//TODO revoir les champs qui n'existent pas
-@Named
 @SessionScoped
+@Named
 public class AdoptionRequestBean implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log = Logger.getLogger(AdvertisementBean.class.getName());
 
     // Champs pour les détails d'une demande
     private UUID advertisementID;
     private Advertisement selectedAdvertisement;
     private String adopterName;
     private String petName;
-    private String petType;
     private Date requestDate;
     private String petOwnerName;
     private String status;
@@ -40,11 +39,20 @@ public class AdoptionRequestBean implements Serializable {
     @Inject
     private LoginBean loginBean;
 
-    @Named
-    @Inject
-    private AdvertisementBean advertisementBean;
+    public AdoptionRequestBean(){
+        init();
+    }
 
-    //TODO init method
+    @PostConstruct
+    public void init(){
+        if (loginBean == null) {
+            log.severe("LoginBean is null in AdoptionRequestBean!");
+        } else {
+            log.info("LoginBean successfully injected with UUID: " + loginBean.getLoggedInUserId());
+        }
+
+//        loadMyRequests();
+    }
 
 
     // Getters et Setters
@@ -54,14 +62,6 @@ public class AdoptionRequestBean implements Serializable {
 
     public void setRequests(List<AdoptionRequest> requests) {
         this.requests = requests;
-    }
-
-    public AdoptionRequest getSelectedRequest() {
-        return selectedRequest;
-    }
-
-    public void setSelectedRequest(AdoptionRequest selectedRequest) {
-        this.selectedRequest = selectedRequest;
     }
 
     public String getAdopterName() {
@@ -128,20 +128,32 @@ public class AdoptionRequestBean implements Serializable {
             selectedAdvertisement = service.getAdvertisement(advertisementID);
         }
     }
-    public void loadAdvertisementFromQuery() {
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String adID = params.get("selectedAdvertisementID");
-        if (adID != null) {
-            selectedAdvertisement = service.getAdvertisement(UUID.fromString(adID));
-        }
-    }
+
     // Chargement des requêtes pour un adoptant
     public List<AdoptionRequest> loadMyRequests() {
-        UUID userId = loginBean.getLoggedInUserId();
-        if (userId != null) {
-            requests = service.getAdopter(userId).getAdoptionRequests();
+
+        if (loginBean == null || loginBean.getLoggedInUserId() == null) {
+            log.warning("LoginBean or logged-in user ID is null!");
+            return Collections.emptyList(); // Return an empty list to avoid breaking the page
         }
-        return Collections.emptyList();
+
+        // Initialize the requests list to avoid null
+        if (requests == null) {
+            requests = new ArrayList<>();
+        }
+
+        if (loginBean.getLoggedInUserId() != null) {
+            try {
+                // Load adoption requests for the logged-in user
+                requests = service.getAdopter(loginBean.getLoggedInUserId()).getAdoptionRequests();
+            } catch (Exception e) {
+                System.err.println("Error loading requests: " + e.getMessage());
+                // Log the error and ensure the requests list is not null
+                requests = new ArrayList<>();
+            }
+        }
+
+        return requests;
     }
 
     // Annuler une demande
@@ -156,6 +168,78 @@ public class AdoptionRequestBean implements Serializable {
 
         try {
             service.cancelAdoptionRequest(request);
+            // Update the list of requests in the bean to reflect the change
+//            loadMyRequests();
+
+            // Display success message
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Request Cancelled",
+                            "Adoption request has been successfully cancelled."));
+        } catch (Exception e) {
+            // Display error message if the service call fails
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Cancellation Failed",
+                            "An error occurred while cancelling the adoption request: " + e.getMessage()));
+        }
+    }
+
+    // Voir les détails d'une demande
+    public String viewRequestDetails(AdoptionRequest request) {
+        this.selectedRequest = request;
+        return "ViewAdvertisement.xhtml?faces-redirect=true";
+    }
+
+    //soumettre une demande
+    public AdoptionRequest submitRequest(UUID advertisementID) {
+        AdoptionRequest adoptionRequest = new AdoptionRequest(
+                loginBean.getLoggedInUserId(),
+                service.getAdvertisement(advertisementID),
+                AdoptionRequest.Status.PENDING,
+                requestMessage
+        );
+
+        try {
+            adoptionRequest = service.addAdoptionRequest(adoptionRequest);
+            log.info("Adoption Request Successfully created " + adoptionRequest.toString());
+
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Request Submitted",
+                            "Your adoption request has been successfully submitted."));
+            return adoptionRequest;
+        } catch (Exception e) {
+            log.warning("Failed to create new adoption request: " + e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Request Failed",
+                            "Could not submit the request. Please try again later."));
+            return null;
+        }
+    }
+
+    //obtenir le nom de l'adopter
+    public String getAdopterNameDetails(AdoptionRequest adoptionRequest){
+        if (adoptionRequest != null) {
+            Adopter adopter = service.getAdopter(adoptionRequest.getAdopterID());
+            return adopter.getFirstName();
+        }
+        return null;
+    }
+
+    //accepter une request
+    public void acceptAdoptionRequest(AdoptionRequest adoptionRequest) {
+        if (adoptionRequest == null || adoptionRequest.getAdopterID() == null || adoptionRequest.getRequestID() == null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Invalid request",
+                            "Cannot cancel adoption request: Missing required data."));
+            return;
+        }
+
+        try {
+            service.acceptAdoptionRequest(adoptionRequest);
             // Update the list of requests in the bean to reflect the change
             loadMyRequests();
 
@@ -173,39 +257,32 @@ public class AdoptionRequestBean implements Serializable {
         }
     }
 
-
-    // Voir les détails d'une demande
-    public String viewRequestDetails(AdoptionRequest request) {
-        this.selectedRequest = request;
-        return "ViewAdvertisement.xhtml?faces-redirect=true";
-    }
-
-    // Modifier une demande
-    public String modifyRequest(AdoptionRequest request) {
-        this.selectedRequest = request;
-        return "ModifyRequest.xhtml?faces-redirect=true";
-    }
-
-    public String submitRequest() {
-        try {
-            AdoptionRequest adoptionRequest = new AdoptionRequest(loginBean.getLoggedInUserId(), selectedAdvertisement, AdoptionRequest.Status.PENDING);
-//            adoptionRequest.setAdvertisement(selectedAdvertisement);
-//            adoptionRequest.setAdopterID(loginBean.getLoggedInUserId()); // Fetch logged-in user's ID
-//            adoptionRequest.setMessage(requestMessage); TODO
-
-            service.addAdoptionRequest(adoptionRequest);
-
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Request Submitted",
-                            "Your adoption request has been successfully submitted."));
-            return "MyRequests?faces-redirect=true";
-        } catch (Exception e) {
+    //decliner une request
+    public void rejectAdoptionRequest(AdoptionRequest adoptionRequest) {
+        if (adoptionRequest == null || adoptionRequest.getAdopterID() == null || adoptionRequest.getRequestID() == null) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Request Failed",
-                            "Could not submit the request. " + e.getMessage()));
-            return null;
+                            "Invalid request",
+                            "Cannot cancel adoption request: Missing required data."));
+            return;
+        }
+
+        try {
+            service.rejectAdoptionRequest(adoptionRequest);
+            // Update the list of requests in the bean to reflect the change
+            loadMyRequests();
+
+            // Display success message
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Request Cancelled",
+                            "Adoption request has been successfully cancelled."));
+        } catch (Exception e) {
+            // Display error message if the service call fails
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Cancellation Failed",
+                            "An error occurred while cancelling the adoption request: " + e.getMessage()));
         }
     }
 }

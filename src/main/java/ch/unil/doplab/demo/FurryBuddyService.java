@@ -319,8 +319,9 @@ public class FurryBuddyService {
 
     public AdoptionRequest addAdoptionRequest(AdoptionRequest adoptionRequest) throws Exception {
         adoptionRequest.setRequestID(null);  // To make sure the id is not set and avoid bug related to ill-formed UUID on server side
+        var adopterID = adoptionRequest.getAdopterID();
         var response = serviceTarget
-                .path(adoptionRequest.getAdopterID().toString())
+                .path(adopterID.toString())
                 .path("createAdoptionRequest")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(adoptionRequest, MediaType.APPLICATION_JSON));
@@ -342,29 +343,6 @@ public class FurryBuddyService {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    public boolean deleteAdoptionRequest(UUID requestID) {
-        var response = adoptionRequestTarget
-                .path(requestID.toString())
-                .request(MediaType.APPLICATION_JSON)
-                .delete();
-        return response.getStatus() == 200;
-    }
-
-    public List<AdoptionRequest> getRequestsForAdvertisements(UUID petOwnerID) {
-        return adoptionRequestTarget
-                .path("requestsForOwner")
-                .path(petOwnerID.toString())
-                .request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<AdoptionRequest>>() {});
-    }
-    public List<AdoptionRequest> getRequestsForAdopter(String adopterName) {
-        return adoptionRequestTarget
-                .path("byAdopter")
-                .path(adopterName)
-                .request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<AdoptionRequest>>() {});
     }
 
     public boolean updateRequestStatus(AdoptionRequest adoptionRequest) throws Exception {
@@ -391,6 +369,58 @@ public class FurryBuddyService {
         var response = serviceTarget
                 .path(adoptionRequest.getAdopterID().toString())
                 .path("cancelAdoptionRequest")
+                .path(adoptionRequest.getRequestID().toString())
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(adoptionRequest, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() == 200 && response.hasEntity()) {
+            return response.readEntity(AdoptionRequest.class);
+        }
+
+        else {
+            ExceptionDescription description = response.readEntity(ExceptionDescription.class);
+            try {
+                Class<?> exceptionClass = Class.forName(description.getType());
+                Constructor<?> constructor = exceptionClass.getConstructor(String.class);
+                Exception exception = (Exception) constructor.newInstance(description.getMessage());
+                throw exception;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    public AdoptionRequest acceptAdoptionRequest(AdoptionRequest adoptionRequest){
+        var response = serviceTarget
+                .path(adoptionRequest.getAdvertisement().getPetOwnerID().toString())
+                .path("acceptAdoptionRequest")
+                .path(adoptionRequest.getRequestID().toString())
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(adoptionRequest, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() == 200 && response.hasEntity()) {
+            return response.readEntity(AdoptionRequest.class);
+        }
+
+        else {
+            ExceptionDescription description = response.readEntity(ExceptionDescription.class);
+            try {
+                Class<?> exceptionClass = Class.forName(description.getType());
+                Constructor<?> constructor = exceptionClass.getConstructor(String.class);
+                Exception exception = (Exception) constructor.newInstance(description.getMessage());
+                throw exception;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    public AdoptionRequest rejectAdoptionRequest(AdoptionRequest adoptionRequest){
+        var response = serviceTarget
+                .path(adoptionRequest.getAdvertisement().getPetOwnerID().toString())
+                .path("rejectAdoptionRequest")
                 .path(adoptionRequest.getRequestID().toString())
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(adoptionRequest, MediaType.APPLICATION_JSON));

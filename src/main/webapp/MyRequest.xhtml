@@ -15,26 +15,28 @@
 
     <!-- Contenu principal -->
     <ui:define name="section-content">
-        <f:event type="preRenderView" listener="#{adopterBean.loadMyRequests()}" />
+        <f:event type="preRenderView" listener="#{adopterBean.loadMyRequests()}"/>
 
         <!-- Tableau des demandes d'adoption -->
         <p:dataTable id="myRequests" value="#{adopterBean.requests}" var="adoptionRequest">
             <p:column headerText="Pet Name">
-                <h:outputText value="#{adoptionRequest.advertisement.pet.name}" />
+                <h:outputText value="#{adoptionRequest.advertisement.pet.name}"/>
             </p:column>
-<!--            <p:column headerText="Pet Owner Name">-->
-<!--                <h:outputText value="#{request.advertisement.petOwnerName}" />-->
-<!--            </p:column>-->
             <p:column headerText="Status">
-                <h:outputText value="#{adoptionRequest.status}" />
+                <h:outputText value="#{adoptionRequest.status}"/>
             </p:column>
-            <p:column headerText="Actions" rendered="#{adoptionRequest != null and adoptionRequest.status eq 'PENDING'}">
-                <p:commandButton value="View Ad" actionListener="#{advertisementBean.viewDetails(adoptionRequest.advertisement)}" />
-                <p:commandButton value="Cancel"
-                                 action="#{adoptionRequestBean.cancelAdoptionRequest(adoptionRequest)}"
-                                 oncomplete="window.location.href='CancelAdoptionRequest.xhtml'"
-                                 process="@form"/>
+
+            <p:column headerText="Actions">
+                <h:form>
+                    <p:commandButton value="View Ad"
+                                     actionListener="#{advertisementBean.viewDetails(adoptionRequest.advertisement)}"/>
+                    <p:commandButton value="Cancel"
+                                     actionListener="#{adoptionRequestBean.cancelAdoptionRequest(adoptionRequest)}"
+                                     update="myRequests"
+                                     rendered="#{adoptionRequest.status eq 'PENDING'}"/>
+                </h:form>
             </p:column>
+
         </p:dataTable>
     </ui:define>
 
@@ -43,127 +45,126 @@
 </html>
 
 
+        <!-- Boutons pour voir + de détails, modifier ou annuler la request TODO -->
 
-        <!-- Boutons pour voir + de détails, modifier ou annuler la request -->
+        <!--<head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>My Requests</title>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f9f9f9;
+                }
 
-<!--<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Requests</title>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-        }
+                .header {
+                    background-color: #a33e3e;
+                    color: #fff;
+                    padding: 10px;
+                    text-align: center;
+                    font-size: 24px;
+                    font-weight: bold;
+                }
 
-        .header {
-            background-color: #a33e3e;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
+                .content {
+                    margin: 20px auto;
+                    max-width: 800px;
+                    background-color: #fff6e6;
+                    border: 1px solid #a33e3e;
+                    padding: 15px;
+                }
 
-        .content {
-            margin: 20px auto;
-            max-width: 800px;
-            background-color: #fff6e6;
-            border: 1px solid #a33e3e;
-            padding: 15px;
-        }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+                table th, table td {
+                    text-align: left;
+                    padding: 10px;
+                    border-bottom: 1px solid #a33e3e;
+                }
 
-        table th, table td {
-            text-align: left;
-            padding: 10px;
-            border-bottom: 1px solid #a33e3e;
-        }
+                table th {
+                    background-color: #a33e3e;
+                    color: #fff;
+                }
 
-        table th {
-            background-color: #a33e3e;
-            color: #fff;
-        }
+                table tr:last-child td {
+                    border-bottom: none;
+                }
 
-        table tr:last-child td {
-            border-bottom: none;
-        }
+                .actions button {
+                    margin-right: 5px;
+                    padding: 8px 12px;
+                    border: none;
+                    background-color: #d89b6c;
+                    color: #fff;
+                    font-size: 14px;
+                    cursor: pointer;
+                    border-radius: 3px;
+                }
 
-        .actions button {
-            margin-right: 5px;
-            padding: 8px 12px;
-            border: none;
-            background-color: #d89b6c;
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 3px;
-        }
+                .actions button:hover {
+                    background-color: #a33e3e;
+                }
 
-        .actions button:hover {
-            background-color: #a33e3e;
-        }
+                .checkbox {
+                    text-align: center;
+                }
+        </head>
+        <body>
+        <div class="header">
+            My Requests
+        </div>
+        <div class="content">
+            <table>
+                <thead>
+                <tr>
+                    <th>Pet</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th class="checkbox">Select</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Dog</td>
+                    <td>2024-11-28</td>
+                    <td>Pending</td>
+                    <td class="checkbox"><input type="radio" name="select" /></td>
+                    <td class="actions">
+                        <button>Details</button>
+                        <button>Modify</button>
+                        <button>Cancel</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cat</td>
+                    <td>2024-11-29</td>
+                    <td>Approved</td>
+                    <td class="checkbox"><input type="radio" name="select" /></td>
+                    <td class="actions">
+                        <button>Details</button>
+                        <button>Modify</button>
+                        <button>Cancel</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Rabbit</td>
+                    <td>2024-11-30</td>
+                    <td>Rejected</td>
+                    <td class="checkbox"><input type="radio" name="select" /></td>
+                    <td class="actions">
+                        <button>Details</button>
+                        <button>Modify</button>
+                        <button>Cancel</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        </body>
 
-        .checkbox {
-            text-align: center;
-        }
-</head>
-<body>
-<div class="header">
-    My Requests
-</div>
-<div class="content">
-    <table>
-        <thead>
-        <tr>
-            <th>Pet</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th class="checkbox">Select</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>Dog</td>
-            <td>2024-11-28</td>
-            <td>Pending</td>
-            <td class="checkbox"><input type="radio" name="select" /></td>
-            <td class="actions">
-                <button>Details</button>
-                <button>Modify</button>
-                <button>Cancel</button>
-            </td>
-        </tr>
-        <tr>
-            <td>Cat</td>
-            <td>2024-11-29</td>
-            <td>Approved</td>
-            <td class="checkbox"><input type="radio" name="select" /></td>
-            <td class="actions">
-                <button>Details</button>
-                <button>Modify</button>
-                <button>Cancel</button>
-            </td>
-        </tr>
-        <tr>
-            <td>Rabbit</td>
-            <td>2024-11-30</td>
-            <td>Rejected</td>
-            <td class="checkbox"><input type="radio" name="select" /></td>
-            <td class="actions">
-                <button>Details</button>
-                <button>Modify</button>
-                <button>Cancel</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-</body>
-
-</html> -->
+        </html> -->
