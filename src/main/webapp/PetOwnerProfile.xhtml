@@ -37,10 +37,31 @@
             </p:inputText>
             <p:message for="email" display="text"/><br/>
 
+            <!-- Location Information -->
+
+            <p:outputLabel for="@next" value="Town"/><br/>
+            <p:inputText id="town" value="#{petOwnerBean.town}" required="true"
+                         requiredMessage="Town is required.">
+                <p:ajax event="blur" update="basicInfo" listener="#{petOwnerBean.checkIfChanged()}"/>
+            </p:inputText>
+            <p:message for="town" display="text"/><br/>
+
+            <p:outputLabel for="@next" value="Address"/><br/>
+            <p:inputText id="address" value="#{petOwnerBean.address}" required="true"
+                         requiredMessage="Last name is required.">
+                <p:ajax event="blur" update="basicInfo" listener="#{petOwnerBean.checkIfChanged()}"/>
+            </p:inputText>
+            <p:message for="address" display="text"/><br/>
+
+            <p:outputLabel for="@next" value="Postal code"/><br/>
+            <p:inputText id="postalCode" value="#{petOwnerBean.postalCode}" required="true"
+                         requiredMessage="Postal code is required.">
+                <p:ajax event="blur" update="basicInfo" listener="#{petOwnerBean.checkIfChanged()}"/>
+            </p:inputText>
+            <p:message for="postalCode" display="text"/><br/>
+
             <p:commandButton id="updateButton" value="Update" disabled="#{petOwnerBean.buttonDisabled}"
                              action="#{petOwnerBean.updateProfile}" update="basicInfo"/>
-            <p:commandButton id="undoButton" value="Undo" actionListener="#{petOwnerBean.undoChanges}"
-                             immediate="true" update="basicInfo"/>
         </h:form>
         <br/>
 

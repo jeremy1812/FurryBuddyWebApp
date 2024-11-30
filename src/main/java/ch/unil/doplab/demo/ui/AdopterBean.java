@@ -3,6 +3,7 @@ package ch.unil.doplab.demo.ui;
 import ch.unil.doplab.demo.FurryBuddyService;
 import ch.unil.furrybuddy.domain.Adopter;
 import ch.unil.furrybuddy.domain.AdoptionRequest;
+import ch.unil.furrybuddy.domain.Location;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -25,6 +26,9 @@ public class AdopterBean extends Adopter implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
+    private String town;
+    private String postalCode;
+    private String address;
     private String currentPassword;
     private String newPassword;
     private boolean changed;
@@ -64,6 +68,9 @@ public class AdopterBean extends Adopter implements Serializable {
                 this.lastName = adopter.getLastName();
                 this.email = adopter.getEmail();
                 this.requests = adopter.getAdoptionRequests();
+                this.town = adopter.getLocation().getTown();
+                this.postalCode = adopter.getLocation().getPostalCode();
+                this.address = adopter.getLocation().getAddress();
             }
         }
     }
@@ -98,6 +105,7 @@ public class AdopterBean extends Adopter implements Serializable {
                 adopter.setFirstName(this.firstName);
                 adopter.setLastName(this.lastName);
                 adopter.setEmail(this.email);
+                adopter.setLocation(new Location(this.town, this.postalCode, this.address));
                 theService.setAdopter(adopter); // Save changes
                 this.changed = false;
                 this.dialogMessage = "Profile updated successfully.";
@@ -112,7 +120,6 @@ public class AdopterBean extends Adopter implements Serializable {
         loadAdopterData();
         this.replaceWith(theAdopter);
         this.changed = false;
-//        this.buttonDisabled = true;
     }
 
     // Change password
@@ -170,7 +177,29 @@ public class AdopterBean extends Adopter implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+    public String getTown() {
+        return town;
+    }
 
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
     public String getCurrentPassword() {
         return currentPassword;
     }

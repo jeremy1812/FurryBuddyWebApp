@@ -10,7 +10,7 @@
 <ui:composition template="templates/AdopterTemplate.xhtml">
 
     <ui:define name="title">Adopter | Profile</ui:define>
-    <ui:define name="section-title">#{adopterBean.firstName} | Profile</ui:define>
+    <ui:define name="section-title">#{adopterBean.firstName} #{adopterBean.lastName} | Profile</ui:define>
 
     <ui:define name="section-content">
         <!-- Basic Information -->
@@ -37,10 +37,30 @@
             </p:inputText>
             <p:message for="email" display="text"/><br/>
 
+            <!-- Location Information -->
+            <p:outputLabel for="@next" value="Town"/><br/>
+            <p:inputText id="town" value="#{adopterBean.town}" required="true"
+                         requiredMessage="Town is required.">
+                <p:ajax event="blur" update="basicInfo" listener="#{adopterBean.checkIfChanged()}"/>
+            </p:inputText>
+            <p:message for="town" display="text"/><br/>
+
+            <p:outputLabel for="@next" value="Address"/><br/>
+            <p:inputText id="address" value="#{adopterBean.address}" required="true"
+                         requiredMessage="Last name is required.">
+                <p:ajax event="blur" update="basicInfo" listener="#{adopterBean.checkIfChanged()}"/>
+            </p:inputText>
+            <p:message for="address" display="text"/><br/>
+
+            <p:outputLabel for="@next" value="Postal code"/><br/>
+            <p:inputText id="postalCode" value="#{adopterBean.postalCode}" required="true"
+                         requiredMessage="Postal code is required.">
+                <p:ajax event="blur" update="basicInfo" listener="#{adopterBean.checkIfChanged()}"/>
+            </p:inputText>
+            <p:message for="postalCode" display="text"/><br/>
+
             <p:commandButton id="updateButton" value="Update" disabled="#{adopterBean.buttonDisabled}"
                              action="#{adopterBean.updateProfile()}" update="basicInfo"/>
-            <p:commandButton id="undoButton" value="Undo" actionListener="#{adopterBean.undoChanges}"
-                             immediate="true" update="basicInfo"/>
             <p:dialog id="updateErrorDialog"
                       widgetVar="updateErrorDialog"
                       header="Update impossible"
@@ -50,6 +70,7 @@
                       height="50">
                 <h:outputText id="updateErrorMessage" value="#{adopterBean.dialogMessage}"/>
             </p:dialog>
+
         </h:form>
         <br/>
 

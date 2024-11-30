@@ -18,11 +18,29 @@
 
     <!-- Menu spécifique pour les Pet Owners -->
     <ui:define name="menu">
-        <h:link outcome="MyAdvertisement" value="My Advertisements" />
-        <h:link outcome="AddAdvertisement" value="New Advertisement" />
-        <h:link outcome="RequestReceived" value="View my requests" />
-        <h:link outcome="PetOwnerProfile" value="Profile" />
-        <p:commandLink value="Logout" action="#{loginBean.logout}" process="@this" />
+
+        <div class="card">
+            <h:form>
+                <p:growl id="messages"/>
+
+                <p:menubar hideDelay="1000">
+                    <f:facet name="start">
+                        <p:graphicImage name="./images/logo.png" />
+                    </f:facet>
+                    <p:submenu label="Advertisements" icon="pi pi-fw pi-megaphone">
+                        <p:menuitem value="New Advertisement" icon="pi pi-fw pi-plus" outcome="AddAdvertisement"/>
+                        <p:menuitem value="My advertisements" icon="pi pi-fw pi-list" outcome="MyAdvertisement"/>
+                    </p:submenu>
+
+                    <p:menuitem value="Requests received" icon="pi pi-fw pi-inbox" outcome="RequestReceived"/>
+                    <p:menuitem value="Profile" icon="pi pi-fw pi-user" outcome="PetOwnerProfile"/>
+
+                    <f:facet name="end">
+                        <p:button value="Logout" icon="pi pi-fw pi-sign-out" styleClass="ui-button-info" outcome="Login"/>
+                    </f:facet>
+                </p:menubar>
+            </h:form>
+        </div>
     </ui:define>
 
     <!-- Titre principal de la section -->

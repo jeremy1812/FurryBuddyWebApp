@@ -3,6 +3,7 @@ package ch.unil.doplab.demo.ui;
 import ch.unil.doplab.demo.FurryBuddyService;
 import ch.unil.furrybuddy.domain.Advertisement;
 import ch.unil.furrybuddy.domain.AdoptionRequest;
+import ch.unil.furrybuddy.domain.Location;
 import ch.unil.furrybuddy.domain.PetOwner;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -14,10 +15,11 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @SessionScoped
 @Named
-public class PetOwnerBean implements Serializable {
+public class PetOwnerBean extends PetOwner implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // Champs existants
@@ -30,6 +32,9 @@ public class PetOwnerBean implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
+    private String town;
+    private String postalCode;
+    private String address;
     private String currentPassword;
     private String newPassword;
     private String dialogMessage;
@@ -58,6 +63,9 @@ public class PetOwnerBean implements Serializable {
                 this.firstName = petOwner.getFirstName();
                 this.lastName = petOwner.getLastName();
                 this.email = petOwner.getEmail();
+                this.town = petOwner.getLocation().getTown();
+                this.postalCode = petOwner.getLocation().getPostalCode();
+                this.address = petOwner.getLocation().getAddress();
             }
         }
     }
@@ -71,11 +79,20 @@ public class PetOwnerBean implements Serializable {
         return Collections.emptyList();
     }
 
-    // Charger les demandes reçues pour ses publicités TODO
-    public void loadReceivedRequests() {
-        if (uuid != null) {
-            receivedRequests = theService.getRequestsForAdvertisements(uuid);
+    // Charger les demandes reçues pour ses publicités
+    public List<AdoptionRequest> loadReceivedRequests() {
+        UUID userId = loginBean.getLoggedInUserId();
+        if (userId != null) {
+            List<AdoptionRequest> allRequests = theService.getAllAdoptionRequests();
+
+            receivedRequests = allRequests.stream()
+                    .filter(adoptionReq -> adoptionReq.getAdvertisement() != null &&
+                            adoptionReq.getAdvertisement().getPetOwnerID() != null &&
+                            adoptionReq.getAdvertisement().getPetOwnerID().equals(userId))
+                    .collect(Collectors.toList());
         }
+        return Collections.emptyList();
+
     }
 
     // Vérifie si des modifications ont été faites
@@ -97,6 +114,7 @@ public class PetOwnerBean implements Serializable {
                 petOwner.setFirstName(this.firstName);
                 petOwner.setLastName(this.lastName);
                 petOwner.setEmail(this.email);
+                petOwner.setLocation(new Location(this.town, this.postalCode, this.address));
                 theService.setPetOwner(petOwner); // Sauvegarde des modifications
                 this.changed = false;
                 this.dialogMessage = "Profile updated successfully.";
@@ -199,6 +217,29 @@ public class PetOwnerBean implements Serializable {
         this.email = email;
     }
 
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
     public String getCurrentPassword() {
         return currentPassword;
     }
