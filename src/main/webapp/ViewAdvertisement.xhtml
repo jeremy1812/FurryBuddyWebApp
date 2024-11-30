@@ -5,29 +5,30 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:head>
-        <title>#{advertisementBean.selectedAdvertisement.pet.name}</title>
-        <h:outputStylesheet name="css/new.css"/>
-    </h:head>
-    <h:body>
+
+<ui:composition template="templates/AdopterTemplate.xhtml">
+    <ui:define name="title">#{advertisementBean.selectedAdvertisement.pet.name}</ui:define>
+    <ui:define name="section-title">#{advertisementBean.selectedAdvertisement.pet.name} | Information </ui:define>
+
+    <ui:define name="section-content">
+
         <f:event type="preRenderView" listener="#{advertisementBean.loadSpecificAdvertisement(advertisementBean.selectedAdvertisement)}" />
         <!-- Main Container -->
         <p:panel style="max-width: 1200px; margin: 0 auto; padding: 20px;">
             <!-- Header Section -->
             <p:commandButton value="Back to all advertisements" onclick="window.location.href='GetAllAdvertisements.xhtml'"/>
-
+            <p:separator/>
+            <p:commandButton value="Create Request"
+                             icon="pi pi-plus"
+                             action="AddAdoptionRequest?faces-redirect=true"
+                             process="@this"
+                             oncomplete="window.location.href='AddAdoptionRequest.xhtml?selectedAdvertisementID=#{advertisementBean.selectedAdvertisement.advertisementID}'"/>
             <!-- Carousel Section -->
             <p:panel header="Images" style="margin-bottom: 20px;">
                 <p:galleria value="${pageContext.request.contextPath}./images/IMG_4807.JPG" var="image" panelWidth="500" panelHeight="300" showThumbnails="true">
                     <p:graphicImage value="#{image}" alt="Animal Image" style="max-width: 300px; height: auto;" />
                 </p:galleria>
             </p:panel>
-<!--            <p:panel header="Images" style="margin-bottom: 20px;">-->
-<!--                <p:galleria showThumbnails="false" panelWidth="500" panelHeight="300">-->
-<!--                    <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG" alt="Animal Image" style="max-width: 300px; height: auto;"/>-->
-<!--                </p:galleria>-->
-<!--            </p:panel>-->
 
             <!-- Description Section -->
             <p:panel header="Description" style="margin-top: 20px;">
@@ -80,6 +81,6 @@
             </p:panelGrid>
 
         </p:panel>
-    </h:body>
-</f:view>
+    </ui:define>
+</ui:composition>
 </html>

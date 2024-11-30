@@ -131,9 +131,9 @@ public class FurryBuddyService {
      Adopter operations
      */
 
-    public Adopter getAdopter(String id) {
+    public Adopter getAdopter(UUID userID) {
         var adopter = adopterTarget
-                .path(id.toString())
+                .path(userID.toString())
                 .request()
                 .get(Adopter.class);
         return adopter;
@@ -276,14 +276,6 @@ public class FurryBuddyService {
         return response.getStatus() == 200;
     }
 
-//    public List<Advertisement> getAdvertisementsByPetOwner(UUID petOwnerID) {
-//        return advertisementTarget
-//                .path("byOwner")
-//                .path(petOwnerID.toString())
-//                .request(MediaType.APPLICATION_JSON)
-//                .get(new GenericType<List<Advertisement>>() {});
-//    }
-
 
     /*
     Adoption request operations
@@ -327,7 +319,9 @@ public class FurryBuddyService {
 
     public AdoptionRequest addAdoptionRequest(AdoptionRequest adoptionRequest) throws Exception {
         adoptionRequest.setRequestID(null);  // To make sure the id is not set and avoid bug related to ill-formed UUID on server side
-        var response = adoptionRequestTarget
+        var response = serviceTarget
+                .path(adoptionRequest.getAdopterID().toString())
+                .path("createAdoptionRequest")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(adoptionRequest, MediaType.APPLICATION_JSON));
 
@@ -393,6 +387,30 @@ public class FurryBuddyService {
         }
     }
 
+    public AdoptionRequest cancelAdoptionRequest(AdoptionRequest adoptionRequest){
+        var response = serviceTarget
+                .path(adoptionRequest.getAdopterID().toString())
+                .path("cancelAdoptionRequest")
+                .path(adoptionRequest.getRequestID().toString())
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(adoptionRequest, MediaType.APPLICATION_JSON));
 
+        if (response.getStatus() == 200 && response.hasEntity()) {
+            return response.readEntity(AdoptionRequest.class);
+        }
+
+        else {
+            ExceptionDescription description = response.readEntity(ExceptionDescription.class);
+            try {
+                Class<?> exceptionClass = Class.forName(description.getType());
+                Constructor<?> constructor = exceptionClass.getConstructor(String.class);
+                Exception exception = (Exception) constructor.newInstance(description.getMessage());
+                throw exception;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
 
 }

@@ -1,9 +1,7 @@
 package ch.unil.doplab.demo.ui;
 
 import ch.unil.doplab.demo.FurryBuddyService;
-import ch.unil.furrybuddy.domain.Advertisement;
-import ch.unil.furrybuddy.domain.Location;
-import ch.unil.furrybuddy.domain.Pet;
+import ch.unil.furrybuddy.domain.*;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -16,12 +14,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @SessionScoped
 @Named
 public class AdvertisementBean extends Advertisement implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log = Logger.getLogger(AdvertisementBean.class.getName());
 
     // Advertisement Fields
     private Advertisement theAdvertisement;
@@ -199,47 +199,43 @@ public class AdvertisementBean extends Advertisement implements Serializable {
     }
 
     // Method to Add Advertisement
-    public void addAdvertisement() {
-        if (!loginBean.isPetOwner()) {
-            throw new IllegalArgumentException("User is not a pet owner.");
-        }
-
-        UUID userId = loginBean.getLoggedInUserId();
-        if (userId == null) {
-            throw new IllegalArgumentException("User ID is null. Please log in.");
-        }
-
+    public Advertisement addAdvertisement() {
+        // Create a new advertisement object
+        Advertisement advertisement = new Advertisement(
+                pet,
+                loginBean.getLoggedInUserId(),
+                "toto", // TODO
+                location,
+                Status.AVAILABLE
+        );
         try {
-            // Create Advertisement
-            theAdvertisement = new Advertisement(
-                    pet,
-                    userId, // Pet owner ID
-                    pet.getDescription(),
-                    location,
-                    Advertisement.Status.AVAILABLE
-            );
-
-            // Save Advertisement
-            var savedAdvertisement = theService.addAdvertisement(theAdvertisement);
-            if (savedAdvertisement != null) {
-                this.theAdvertisement = savedAdvertisement;
-                changed = false;
-
-                // Success message
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO,
-                                "Advertisement added successfully",
-                                "Your advertisement is now live."));
+            // Ensure the pet has an ID
+            if (pet.getPetID() == null) {
+                pet.setPetID(UUID.randomUUID());
+                log.info("Generated new Pet ID: " + pet.getPetID());
             }
+
+            // Send the advertisement to the service for saving
+            advertisement = theService.addAdvertisement(advertisement);
+            log.info("Advertisement successfully created: " + advertisement);
+
+            // Provide success feedback to the user
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Advertisement created successfully!"));
+
+            return advertisement; // Return the created advertisement
+
         } catch (Exception e) {
+            // Log and handle errors gracefully
+            log.warning("Failed to create advertisement: " + e.getMessage());
+            log.info("Advertisement details: " + advertisement);
+
+            // Provide error feedback to the user
             dialogMessage = e.getMessage();
             PrimeFaces.current().executeScript("PF('updateErrorDialog').show();");
-
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Failed to add advertisement",
-                            e.getMessage()));
         }
+
+        return null;
     }
 
 
