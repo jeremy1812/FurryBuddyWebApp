@@ -16,12 +16,13 @@
         <div class="card">
             <h1>Request sent successfully!</h1>
             <p>
+<!--                TODO pet name here-->
                 Your adoption request for <strong>#{adoptionRequestBean.petName}</strong> has been successfully sent to the owner.
                 We hope you receive a positive response soon!
             </p>
             <h:form>
                 <p:commandButton value="Home"
-                                 action="home.xhtml?faces-redirect=true"
+                                 action="GetAllAdvertisements.xhtml?faces-redirect=true"
                                  styleClass="confirm-button"
                                  icon="pi pi-home" />
             </h:form>
