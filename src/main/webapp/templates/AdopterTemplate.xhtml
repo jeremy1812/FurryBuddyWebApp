@@ -4,7 +4,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="CommonTemplate.xhtml">
@@ -15,7 +14,6 @@
     <!-- Menu spécifique pour les Adopters -->
     <ui:define name="menu">
         <h:link outcome="GetAllAdvertisements" value="Advertisements" />
-        <h:link outcome="AddAdoptionRequest" value="New Adoption Request" />
         <h:link outcome="MyRequest" value="My Requests" />
         <h:link outcome="AdopterProfile" value="Profile" />
         <p:commandLink value="Logout" action="#{loginBean.logout}" process="@this" />
