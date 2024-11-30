@@ -8,7 +8,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <h:head>
-    <h:outputStylesheet name="css/styles.css" />
+    <h:outputStylesheet name="css/ReviewAdoptionRequest.css" />
     <title>Review Adoption Request</title>
 </h:head>
 <h:body>
@@ -18,11 +18,11 @@
 
             <button class="close-button" onclick="history.back();">✕</button>
 
-            <h1>Review #{adopterBean.adopterName}'s adoption request</h1>
-            <p>#{adopterBean.adopterName} wants to adopt #{adoptionRequestBean.petName}.</p>
+            <h1>Review #{adopterBean.firstName}'s adoption request</h1>
+            <p>#{adopterBean.firstName} wants to adopt #{adoptionRequestBean.petName}.</p>
 
-            <textarea readonly class="request-text" rows="5" cols="40">
-                #{adoptionRequestBean.requestText}
+            <textarea readonly="readonly" class="request-text" rows="5" cols="40">
+                #{adoptionRequestBean.requestMessage}
             </textarea>
 
             <!-- Formulaire de confirmation -->

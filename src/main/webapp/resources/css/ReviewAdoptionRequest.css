@@ -1,0 +1,42 @@
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #fff7f0; /* Couleur de fond */
+
+}
+
+.card {
+    background-color: #FBFDEF; /* Fond clair pour la carte */
+    border: 2px solid #A94A49; /* Bordure assortie */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 50%;
+    max-width: 600px;
+}
+
+.confirm-button {
+    background-color: #A94A49; /* Bouton rouge pour confirmer */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-right: 10px;
+}
+
+.cancel-button {
+    background-color: #e7b893; /* Bouton beige pour annuler */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.confirm-button .pi-check,
+.cancel-button .pi-times {
+    margin-right: 8px; /* Espace entre l'icône et le texte */
+}
