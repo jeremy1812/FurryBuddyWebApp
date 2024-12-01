@@ -82,6 +82,122 @@ public class AdvertisementBean extends Advertisement implements Serializable {
         loadFilterOptions();
     }
 
+    // Getters and Setters
+    public Pet getPet() {
+        if (this.pet == null) {
+            this.pet = new Pet(); // Lazy initialization
+        }
+        return pet;
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
+    }
+
+    public Location getLocation() {
+        if (this.location == null) {
+            this.location = new Location(); // Lazy initialization
+        }
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Advertisement getSelectedAdvertisement() {
+        return selectedAdvertisement;
+    }
+
+    public void setSelectedAdvertisement(Advertisement selectedAdvertisement) {
+        this.selectedAdvertisement = selectedAdvertisement;
+    }
+
+    public boolean isChanged(){return changed;}
+
+    public String getDialogMessage() {
+        return dialogMessage;
+    }
+
+    public List<Advertisement> getAllAdvertisements() {
+        return allAdvertisements;
+    }
+
+    public String getAdvertisementImageUrl(Advertisement ad) {
+        if (ad.getImageURL() == null || ad.getImageURL().isEmpty()) {
+            String randomDogImage = theService.fetchRandomDogImage(); // Fetch image dynamically
+            ad.setImageURL(randomDogImage); // Cache the fetched URL
+        }
+        return ad.getImageURL();
+    }
+
+    public List<String> getSpeciesOptions() {
+        return speciesOptions;
+    }
+
+    public List<String> getBreedOptions() {
+        return breedOptions;
+    }
+
+    public List<String> getCompatibilityOptions() {
+        return compatibilityOptions;
+    }
+
+    public String getSelectedSpecies() {
+        return selectedSpecies;
+    }
+
+    public void setSelectedSpecies(String selectedSpecies) {
+        this.selectedSpecies = selectedSpecies;
+    }
+
+    public String getSelectedBreed() {
+        return selectedBreed;
+    }
+
+    public void setSelectedBreed(String selectedBreed) {
+        this.selectedBreed = selectedBreed;
+    }
+
+    public String getSelectedGender() {
+        return selectedGender;
+    }
+
+    public void setSelectedGender(String selectedGender) {
+        this.selectedGender = selectedGender;
+    }
+
+    public List<String> getSelectedCompatibility() {
+        return selectedCompatibility;
+    }
+
+    public void setSelectedCompatibility(List<String> selectedCompatibility) {
+        this.selectedCompatibility = selectedCompatibility;
+    }
+
+    public List<Advertisement> getFilteredAdvertisements() {
+        return filteredAdvertisements;
+    }
+
+    //loaders
+    public void loadAllAdvertisements() {
+        allAdvertisements = theService.filterAdvertisements(selectedSpecies, selectedBreed, selectedGender, selectedCompatibility);
+//        filteredAdvertisements = new ArrayList<>(theService.getAllAdvertisements());
+    }
+
+    // Method to Load Add Advertisement Page
+    public void loadAddAdvertisementPage() {
+        init();
+    }
+
     private void loadFilterOptions() {
         speciesOptions = List.of("Dog", "Cat", "Sheep", "Hamster", "Fish", "Other", "Bird");
         compatibilityOptions = List.of("Good with Kids", "Good with Other Pets", "House-Trained");
@@ -134,68 +250,59 @@ public class AdvertisementBean extends Advertisement implements Serializable {
                 "Angora Rabbit",
                 "Polish Rabbit",
                 "Harlequin"
-                );
-    }
-
-    // Getters and Setters for Pet
-    public Pet getPet() {
-        if (this.pet == null) {
-            this.pet = new Pet(); // Lazy initialization
-        }
-        return pet;
-    }
-
-    public void setPet(Pet pet) {
-        this.pet = pet;
-    }
-
-    // Getters and Setters for Location
-    public Location getLocation() {
-        if (this.location == null) {
-            this.location = new Location(); // Lazy initialization
-        }
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    // Getters and Setters for Image
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    // Getters and Setters for Advertisement Fields
-    public Advertisement getSelectedAdvertisement() {
-        return selectedAdvertisement;
-    }
-
-    public void setSelectedAdvertisement(Advertisement selectedAdvertisement) {
-        this.selectedAdvertisement = selectedAdvertisement;
-    }
-
-    public boolean isChanged(){return changed;}
-
-    public String getDialogMessage() {
-        return dialogMessage;
-    }
-
-    public void loadAllAdvertisements() {
-        allAdvertisements = theService.filterAdvertisements(selectedSpecies, selectedBreed, selectedGender, selectedCompatibility);
-//        filteredAdvertisements = new ArrayList<>(theService.getAllAdvertisements());
-    }
-
-    public List<Advertisement> getAllAdvertisements() {
-        return allAdvertisements;
+        );
     }
 
     public Advertisement loadSpecificAdvertisement(Advertisement advertisement) {
         return theService.getAdvertisement(advertisement.getAdvertisementID());
+    }
+
+    // actions
+    public String viewDetails(Advertisement ad) {
+        this.selectedAdvertisement = ad;
+        return "ViewAdvertisement.xhtml?faces-redirect=true";
+    }
+
+    public String editAdvertisement(Advertisement ad) {
+        this.selectedAdvertisement = ad;
+        return "EditAdvertisement.xhtml?faces-redirect=true";
+    }
+
+    public void applyFilters() {
+        try {
+            this.filteredAdvertisements = theService.filterAdvertisements(selectedSpecies, selectedBreed, selectedGender, selectedCompatibility);
+            log.info("Filtered advertisements retrieved: " + filteredAdvertisements.size());
+            PrimeFaces.current().ajax().update("advertisementForm");
+        } catch (Exception e) {
+            log.severe("Failed to apply filters: " + e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Filter Error", "Unable to filter advertisements."));
+        }
+    }
+
+    // Vérifie si des modifications ont été faites
+    public void checkIfChanged() {
+        if (selectedAdvertisement.getAdvertisementID() != null) {
+            Advertisement advertisement = theService.getAdvertisement(selectedAdvertisement.getAdvertisementID());
+            boolean petChanged = !this.pet.equals(advertisement.getPet());
+            boolean locationChanged = !this.location.equals(advertisement.getLocation());
+            this.changed = petChanged || locationChanged;
+        }
+    }
+
+    //modifier une annonce
+    public void updateAdvertisement() {
+        try {
+            Advertisement advertisement = theService.getAdvertisement(selectedAdvertisement.getAdvertisementID());
+            if (advertisement != null) {
+                advertisement.setPet(this.pet);
+                advertisement.setDescription(this.pet.getDescription());
+                this.changed = false;
+                this.dialogMessage = "Advertisement updated successfully.";
+            }
+        } catch (Exception e) {
+            this.dialogMessage = "Error updating advertisement: " + e.getMessage();
+        }
     }
 
     // Method to Add Advertisement
@@ -239,14 +346,6 @@ public class AdvertisementBean extends Advertisement implements Serializable {
         return null;
     }
 
-    public String getAdvertisementImageUrl(Advertisement ad) {
-        if (ad.getImageURL() == null || ad.getImageURL().isEmpty()) {
-            String randomDogImage = theService.fetchRandomDogImage(); // Fetch image dynamically
-            ad.setImageURL(randomDogImage); // Cache the fetched URL
-        }
-        return ad.getImageURL();
-    }
-
     // Method to Delete Advertisement
     public void deleteAdvertisement(Advertisement advertisement) {
         log.severe("Advertisement "+ advertisement);
@@ -271,123 +370,4 @@ public class AdvertisementBean extends Advertisement implements Serializable {
         log.severe("AD IS NULL");
     }
 
-    // Method to Load Add Advertisement Page
-    public void loadAddAdvertisementPage() {
-        init();
-    }
-
-    public String viewDetails(Advertisement ad) {
-        this.selectedAdvertisement = ad;
-        return "ViewAdvertisement.xhtml?faces-redirect=true";
-    }
-
-    public String editAdvertisement(Advertisement ad) {
-        this.selectedAdvertisement = ad;
-        return "EditAdvertisement.xhtml?faces-redirect=true";
-    }
-
-    public List<Advertisement> loadPetOwnerAdvertisements() {
-        UUID userId = loginBean.getLoggedInUserId();
-        if (userId != null) {
-            return theService.getPetOwner(userId).getAdvertisements();
-        }
-        return Collections.emptyList(); // Return empty list if no user is logged in
-    }
-
-    public List<String> getSpeciesOptions() {
-        return speciesOptions;
-    }
-
-    public List<String> getBreedOptions() {
-        return breedOptions;
-    }
-
-    public List<String> getCompatibilityOptions() {
-        return compatibilityOptions;
-    }
-
-    public String getSelectedSpecies() {
-        return selectedSpecies;
-    }
-
-    public void setSelectedSpecies(String selectedSpecies) {
-        this.selectedSpecies = selectedSpecies;
-    }
-
-    public String getSelectedBreed() {
-        return selectedBreed;
-    }
-
-    public void setSelectedBreed(String selectedBreed) {
-        this.selectedBreed = selectedBreed;
-    }
-
-    public String getSelectedGender() {
-        return selectedGender;
-    }
-
-    public void setSelectedGender(String selectedGender) {
-        this.selectedGender = selectedGender;
-    }
-
-    public List<String> getSelectedCompatibility() {
-        return selectedCompatibility;
-    }
-
-    public void setSelectedCompatibility(List<String> selectedCompatibility) {
-        this.selectedCompatibility = selectedCompatibility;
-    }
-
-    public List<Advertisement> getFilteredAdvertisements() {
-        return filteredAdvertisements;
-    }
-
-    public void applyFilters() {
-        try {
-            this.filteredAdvertisements = theService.filterAdvertisements(selectedSpecies, selectedBreed, selectedGender, selectedCompatibility);
-            log.info("Filtered advertisements retrieved: " + filteredAdvertisements.size());
-            PrimeFaces.current().ajax().update("advertisementForm");
-        } catch (Exception e) {
-            log.severe("Failed to apply filters: " + e.getMessage());
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Filter Error", "Unable to filter advertisements."));
-        }
-    }
-
-    // Method to handle file upload
-//    public void handleImageUpload(FileUploadEvent event) {
-//        try {
-//            this.image = event.getFile().getContent(); // Read the uploaded file into the byte array
-//            FacesContext.getCurrentInstance().addMessage(null,
-//                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Image Uploaded", "File: " + event.getFile().getFileName()));
-//        } catch (Exception e) {
-//            FacesContext.getCurrentInstance().addMessage(null,
-//                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Upload Failed", e.getMessage()));
-//        }
-//    }
-
-    // Vérifie si des modifications ont été faites
-    public void checkIfChanged() {
-        if (selectedAdvertisement.getAdvertisementID() != null) {
-            Advertisement advertisement = theService.getAdvertisement(selectedAdvertisement.getAdvertisementID());
-            boolean petChanged = !this.pet.equals(advertisement.getPet());
-            boolean locationChanged = !this.location.equals(advertisement.getLocation());
-            this.changed = petChanged || locationChanged;
-        }
-    }
-
-    //modifier une annonce
-    public void updateAdvertisement() {
-        try {
-            Advertisement advertisement = theService.getAdvertisement(selectedAdvertisement.getAdvertisementID());
-            if (advertisement != null) {
-                advertisement.setPet(this.pet);
-                advertisement.setDescription(this.pet.getDescription());
-                this.changed = false;
-                this.dialogMessage = "Advertisement updated successfully.";
-            }
-        } catch (Exception e) {
-            this.dialogMessage = "Error updating advertisement: " + e.getMessage();
-        }
-    }
 }

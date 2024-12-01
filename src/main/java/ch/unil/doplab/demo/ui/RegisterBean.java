@@ -15,7 +15,6 @@ import jakarta.inject.Named;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 
@@ -35,7 +34,6 @@ public class RegisterBean implements Serializable {
     private String locationTown; // Assuming location requires a city
     private String locationPostalCode; //New field for location input
     private String locationAddress;
-    private String petBiography;
 
     private boolean petOwnerSelected;
     private boolean adopterSelected;
