@@ -199,7 +199,7 @@ public class AdoptionRequestBean implements Serializable {
                         AdoptionRequest.Status.PENDING,
                         requestMessage
                 );
-                adoptionRequest.setMessage(requestMessage);
+//                adoptionRequest.setMessage(requestMessage);
 
                 try {
                     adoptionRequest = service.addAdoptionRequest(adoptionRequest);
