@@ -1,9 +1,10 @@
-package ch.unil.doplab.demo.ui;
+package ch.unil.furrybuddy.ui;
 
-import ch.unil.doplab.demo.FurryBuddyService;
-import ch.unil.furrybuddy.domain.Adopter;
+import ch.unil.furrybuddy.FurryBuddyService;
+import ch.unil.furrybuddy.domain.Advertisement;
 import ch.unil.furrybuddy.domain.AdoptionRequest;
 import ch.unil.furrybuddy.domain.Location;
+import ch.unil.furrybuddy.domain.PetOwner;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -14,15 +15,20 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @SessionScoped
 @Named
-public class AdopterBean extends Adopter implements Serializable {
+public class PetOwnerBean extends PetOwner implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Fields
-    private Adopter theAdopter;
+    // Champs existants
     private UUID uuid;
+    private String name;
+    private List<Advertisement> myAdvertisements;
+    private List<AdoptionRequest> receivedRequests;
+
+    // Champs ajoutés pour le profil
     private String firstName;
     private String lastName;
     private String email;
@@ -31,10 +37,9 @@ public class AdopterBean extends Adopter implements Serializable {
     private String address;
     private String currentPassword;
     private String newPassword;
-    private boolean changed;
     private String dialogMessage;
     private boolean buttonDisabled;
-    private List<AdoptionRequest> requests;
+    private boolean changed; // Indique si des modifications ont été apportées
 
     @Inject
     private FurryBuddyService theService;
@@ -42,71 +47,75 @@ public class AdopterBean extends Adopter implements Serializable {
     @Inject
     private LoginBean loginBean;
 
-    public AdopterBean() {
+    public PetOwnerBean() {
         init();
     }
 
     public void init() {
         uuid = null;
-        theAdopter = null;
-        firstName = null;
-        lastName = null;
-        email = null;
-        currentPassword = null;
-        newPassword = null;
-        changed = false;
-        dialogMessage = null;
-        buttonDisabled = false;
     }
 
-    // Load adopter data
-    public void loadAdopterData() {
+    // Méthode pour charger les données du propriétaire
+    public void loadPetOwnerData() {
         if (uuid != null) {
-            Adopter adopter = theService.getAdopter(uuid);
-            if (adopter != null) {
-                this.firstName = adopter.getFirstName();
-                this.lastName = adopter.getLastName();
-                this.email = adopter.getEmail();
-                this.requests = adopter.getAdoptionRequests();
-                this.town = adopter.getLocation().getTown();
-                this.postalCode = adopter.getLocation().getPostalCode();
-                this.address = adopter.getLocation().getAddress();
+            PetOwner petOwner = theService.getPetOwner(uuid);
+            if (petOwner != null) {
+                this.firstName = petOwner.getFirstName();
+                this.lastName = petOwner.getLastName();
+                this.email = petOwner.getEmail();
+                this.town = petOwner.getLocation().getTown();
+                this.postalCode = petOwner.getLocation().getPostalCode();
+                this.address = petOwner.getLocation().getAddress();
             }
         }
     }
 
-    public List<AdoptionRequest> loadMyRequests() {
+    // Charger les publicités postées
+    public List<Advertisement> loadMyAdvertisements() {
         UUID userId = loginBean.getLoggedInUserId();
         if (uuid != null) {
-            requests = theService.getAdopter(userId).getAdoptionRequests();
+            myAdvertisements = theService.getPetOwner(userId).getAdvertisements();
         }
         return Collections.emptyList();
     }
 
-    // Check if fields have changed
+    // Charger les demandes reçues pour ses publicités
+    public List<AdoptionRequest> loadReceivedRequests() {
+        UUID userId = loginBean.getLoggedInUserId();
+        if (userId != null) {
+            List<AdoptionRequest> allRequests = theService.getAllAdoptionRequests();
+
+            receivedRequests = allRequests.stream()
+                    .filter(adoptionReq -> adoptionReq.getAdvertisement() != null &&
+                            adoptionReq.getAdvertisement().getPetOwnerID() != null &&
+                            adoptionReq.getAdvertisement().getPetOwnerID().equals(userId))
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+
+    }
+
+    // Vérifie si des modifications ont été faites
     public void checkIfChanged() {
         if (uuid != null) {
-            Adopter adopter = theService.getAdopter(uuid);
-            if (adopter != null) {
-                boolean nameChanged = !this.firstName.equals(adopter.getFirstName());
-                boolean lastNameChanged = !this.lastName.equals(adopter.getLastName());
-                boolean emailChanged = !this.email.equals(adopter.getEmail());
-                this.changed = nameChanged || emailChanged || lastNameChanged;
-//                this.buttonDisabled = !this.changed;
-            }
+            PetOwner petOwner = theService.getPetOwner(uuid);
+            boolean firstNameChanged = !this.firstName.equals(petOwner.getFirstName());
+            boolean lastNameChanged = !this.lastName.equals(petOwner.getLastName());
+            boolean emailChanged = !this.email.equals(petOwner.getEmail());
+            this.changed = firstNameChanged || lastNameChanged || emailChanged;
         }
     }
 
-    // Update profile information
+    // Met à jour les informations du profil
     public void updateProfile() {
         try {
-            Adopter adopter = theService.getAdopter(uuid);
-            if (this.getUUID() != null) {
-                adopter.setFirstName(this.firstName);
-                adopter.setLastName(this.lastName);
-                adopter.setEmail(this.email);
-                adopter.setLocation(new Location(this.town, this.postalCode, this.address));
-                theService.setAdopter(adopter); // Save changes
+            PetOwner petOwner = theService.getPetOwner(uuid);
+            if (petOwner != null) {
+                petOwner.setFirstName(this.firstName);
+                petOwner.setLastName(this.lastName);
+                petOwner.setEmail(this.email);
+                petOwner.setLocation(new Location(this.town, this.postalCode, this.address));
+                theService.setPetOwner(petOwner); // Sauvegarde des modifications
                 this.changed = false;
                 this.dialogMessage = "Profile updated successfully.";
             }
@@ -115,20 +124,26 @@ public class AdopterBean extends Adopter implements Serializable {
         }
     }
 
-    // Undo changes and reload data
+    // Annule les modifications et recharge les données depuis le service
     public void undoChanges() {
-        loadAdopterData();
-        this.replaceWith(theAdopter);
-        this.changed = false;
+        if (uuid != null) {
+            PetOwner petOwner = theService.getPetOwner(uuid);
+            if (petOwner != null) {
+                this.firstName = petOwner.getFirstName();
+                this.lastName = petOwner.getLastName();
+                this.email = petOwner.getEmail();
+                this.changed = false;
+            }
+        }
     }
 
-    // Change password
+    // Change le mot de passe du propriétaire
     public void changePassword() {
         try {
-            Adopter adopter = theService.getAdopter(uuid);
-            if (adopter != null && adopter.getPassword().equals(this.currentPassword)) {
-                adopter.setPassword(this.newPassword); // Replace with secure hashing if needed
-                theService.setAdopter(adopter);
+            PetOwner petOwner = theService.getPetOwner(uuid);
+            if (petOwner != null && petOwner.getPassword().equals(this.currentPassword)) {
+                petOwner.setPassword(this.newPassword); // Remplacez par un hash sécurisé si nécessaire
+                theService.setPetOwner(petOwner);
                 this.dialogMessage = "Password changed successfully.";
                 resetPasswordChange();
             } else {
@@ -139,19 +154,43 @@ public class AdopterBean extends Adopter implements Serializable {
         }
     }
 
-    // Reset password form fields
+    // Réinitialise les champs du formulaire de changement de mot de passe
     public void resetPasswordChange() {
         this.currentPassword = null;
         this.newPassword = null;
     }
 
-    // Getters and Setters
+    // Getters et Setters pour tous les champs existants et ajoutés
     public UUID getUUID() {
         return uuid;
     }
 
     public void setUUID(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Advertisement> getMyAdvertisements() {
+        return myAdvertisements;
+    }
+
+    public void setMyAdvertisements(List<Advertisement> myAdvertisements) {
+        this.myAdvertisements = myAdvertisements;
+    }
+
+    public List<AdoptionRequest> getReceivedRequests() {
+        return receivedRequests;
+    }
+
+    public void setReceivedRequests(List<AdoptionRequest> receivedRequests) {
+        this.receivedRequests = receivedRequests;
     }
 
     public String getFirstName() {
@@ -177,6 +216,7 @@ public class AdopterBean extends Adopter implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getTown() {
         return town;
     }
@@ -216,20 +256,16 @@ public class AdopterBean extends Adopter implements Serializable {
         this.newPassword = newPassword;
     }
 
-    public boolean isChanged() {
-        return changed;
-    }
-
-    public void setChanged(boolean changed) {
-        this.changed = changed;
-    }
-
     public String getDialogMessage() {
         return dialogMessage;
     }
 
     public void setDialogMessage(String dialogMessage) {
         this.dialogMessage = dialogMessage;
+    }
+
+    public boolean isChanged() {
+        return changed;
     }
 
     public boolean isButtonDisabled() {
@@ -240,20 +276,16 @@ public class AdopterBean extends Adopter implements Serializable {
         this.buttonDisabled = buttonDisabled;
     }
 
-    public List<AdoptionRequest> getRequests() {return requests;}
-
-    public void setRequests(List<AdoptionRequest> requests) {this.requests = requests;}
-
     public String deleteAccount() {
-        UUID adopterID = loginBean.getLoggedInUserId();
-        if (adopterID == null) {
+        UUID petOwnerID = loginBean.getLoggedInUserId();
+        if (petOwnerID == null) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "User ID not found. Please log in."));
             return null;
         }
 
         try {
-            boolean success = theService.deleteAdopter(adopterID);
+            boolean success = theService.deletePetOwner(petOwnerID);
             if (success) {
                 // Log out the user and redirect to the login page
                 loginBean.logout();
@@ -272,4 +304,3 @@ public class AdopterBean extends Adopter implements Serializable {
         return null; // Stay on the same page if deletion fails
     }
 }
-

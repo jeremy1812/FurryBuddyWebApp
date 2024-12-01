@@ -1,6 +1,6 @@
-package ch.unil.doplab.demo.ui;
+package ch.unil.furrybuddy.ui;
 
-import ch.unil.doplab.demo.FurryBuddyService;
+import ch.unil.furrybuddy.FurryBuddyService;
 import ch.unil.furrybuddy.domain.*;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -10,7 +10,6 @@ import jakarta.inject.Named;
 import org.primefaces.PrimeFaces;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;

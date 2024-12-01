@@ -1,4 +1,4 @@
-package ch.unil.doplab.demo;
+package ch.unil.furrybuddy;
 
 import ch.unil.furrybuddy.domain.*;
 import jakarta.annotation.PostConstruct;

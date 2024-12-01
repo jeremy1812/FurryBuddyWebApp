@@ -1,12 +1,11 @@
-package ch.unil.doplab.demo.ui;
+package ch.unil.furrybuddy.ui;
 
-import ch.unil.doplab.demo.FurryBuddyService;
+import ch.unil.furrybuddy.FurryBuddyService;
 import ch.unil.furrybuddy.domain.Adopter;
 import ch.unil.furrybuddy.domain.PetOwner;
 import ch.unil.furrybuddy.domain.Location;
 import ch.unil.furrybuddy.domain.User.Role;
 import ch.unil.furrybuddy.domain.User;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
