@@ -249,6 +249,7 @@ public class AdvertisementBean extends Advertisement implements Serializable {
 
     // Method to Delete Advertisement
     public void deleteAdvertisement(Advertisement advertisement) {
+        log.severe("Advertisement "+ advertisement);
         if (advertisement != null && advertisement.getAdvertisementID() != null) {
             theService.deleteAdvertisement(advertisement.getAdvertisementID(), advertisement.getPetOwnerID());
             boolean success = theService.deleteAdvertisement(advertisement.getAdvertisementID(), advertisement.getPetOwnerID());
@@ -260,12 +261,14 @@ public class AdvertisementBean extends Advertisement implements Serializable {
                                 "Advertisement deleted successfully",
                                 "The advertisement was successfully removed."));
             } else {
+                log.severe("Error somewhere, TOTO");
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                 "Failed to delete advertisement",
                                 "An error occurred while deleting the advertisement."));
             }
         }
+        log.severe("AD IS NULL");
     }
 
     // Method to Load Add Advertisement Page
