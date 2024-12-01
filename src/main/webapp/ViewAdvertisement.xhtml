@@ -14,7 +14,7 @@
 
         <f:event type="preRenderView" listener="#{advertisementBean.loadSpecificAdvertisement(advertisementBean.selectedAdvertisement)}" />
         <!-- Main Container -->
-        <p:panel style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <p:panel style="max-width: 1800px; margin: 0 auto; padding: 20px;">
             <!-- Header Section -->
             <p:commandButton value="Back to all advertisements" onclick="window.location.href='GetAllAdvertisements.xhtml'"/>
             <p:commandButton value="Create Request"
@@ -22,10 +22,10 @@
                              action="AddAdoptionRequest?faces-redirect=true"
                              process="@this"
                              oncomplete="window.location.href='AddAdoptionRequest.xhtml?selectedAdvertisementID=#{advertisementBean.selectedAdvertisement.advertisementID}'"/>
-            <!-- Carousel Section -->
-            <p:panel header="Images" style="margin-bottom: 20px;">
+            <p:spacer height="50px"/>
+            <p:panel header="Image" style="margin-bottom: 20px;">
                 <p:galleria value="${pageContext.request.contextPath}./images/IMG_4807.JPG" var="image" panelWidth="500" panelHeight="300" showThumbnails="true">
-                    <p:graphicImage value="#{image}" alt="Animal Image" style="max-width: 300px; height: auto;" />
+                    <p:graphicImage value="#{image}" alt="Animal Image" style="max-width: 300px; height: auto; text-align: center" />
                 </p:galleria>
             </p:panel>
 
@@ -35,14 +35,14 @@
             </p:panel>
 
             <!-- Details Section -->
-            <h:outputText value="Caracteristics" />
+            <h:outputText value="Caracteristics" style="font-weight: bold; font-size: 20px"/>
 
             <p:panelGrid columns="3" styleClass="details-grid" columnClasses="detail-column">
                 <p:panel header="Age">
                     <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.age} years" />
                 </p:panel>
-                <p:panel header="#{advertisementBean.selectedAdvertisement.pet.name}" style="margin-bottom: 20px;">
-                    <h:outputText value="Species: #{advertisementBean.selectedAdvertisement.pet.species}" />
+                <p:panel header="#{advertisementBean.selectedAdvertisement.pet.species}" style="margin-bottom: 20px;">
+                    <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.species}" />
                 </p:panel>
                 <p:panel header="Breed">
                     <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.breed}" />
@@ -54,12 +54,13 @@
                     <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.vaccinated ? 'Yes' : 'No'}" />
                 </p:panel>
                 <p:panel header="Price">
+
                     <h:outputText value="CHF #{advertisementBean.selectedAdvertisement.pet.price}" />
                 </p:panel>
             </p:panelGrid>
 
             <!-- Compatibility Section -->
-            <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.name} is compatible with ..." />
+            <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.name} is compatible with ..." style="font-weight: bold; font-size: 20px" />
 
             <p:panelGrid columns="3" styleClass="details-grid" columnClasses="detail-column">
                 <p:panel header="Kids">

@@ -13,10 +13,10 @@
     <ui:define name="section-title">All Advertisements</ui:define>
 
     <ui:define name="section-content">
-        <h:outputText value="#{advertisementBean.filteredAdvertisements.size()} Advertisements Found" />
 
         <f:event type="preRenderView" listener="#{advertisementBean.loadAllAdvertisements()}"/>
 
+        <div>
         <!-- Filters -->
         <h:form id="filterForm">
             <p:toolbar style="margin-bottom: 16px; width: 100%;">
@@ -56,10 +56,11 @@
             </p:toolbar>
         </h:form>
 
-
+        <!-- dataview -->
         <h:form id="advertisementForm">
             <p:dataView var="ad" value="#{advertisementBean.filteredAdvertisements}" rows="12" paginator="true"
                         rowsPerPageTemplate="6,12,16"
+                        layout="grid"
                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                         gridIcon="pi pi-th-large" listIcon="pi pi-bars">
 
@@ -73,8 +74,8 @@
                             <span class="advertisement-status badge-#{ad.status}">#{ad.status}</span>
                         </div>
                         <div class="advertisement-grid-item-content">
-                            <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG"
-                                            alt="Pet Image"/>
+                            <p:graphicImage url="#{ad.imageURL}"
+                                            alt="Pet Image" width="150"/>
                             <div class="advertisement-name">#{ad.pet.name}</div>
                             <div class="advertisement-description">#{ad.pet.description}</div>
                             <div class="advertisement-price">CHF #{ad.pet.price}</div>
@@ -107,6 +108,7 @@
 
             </p:dataView>
         </h:form>
+        </div>
     </ui:define>
 </ui:composition>
 </html>

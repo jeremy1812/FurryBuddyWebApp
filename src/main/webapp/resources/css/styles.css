@@ -1,24 +1,64 @@
 /* Général */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #D19B9BFF;
-    margin: 0;
+    background-color: #e6ceb4;
+    color: #5a4a44;
+    /*margin: 0;*/
     padding: 0;
 }
 
 .container {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    background: #ece3b9;
+}
+.section-content {
+    width:100%;
+    max-width: none;
+}
+
+/*body .ui-button{*/
+/*    background: #9c4300;*/
+/*    border: #9c4300;*/
+/*}*/
+
+.ui-toolbar {
+    margin-bottom: 16px;
+    padding: 8px 16px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.ui-dataview-layout-grid {
+    /*margin-top: 16px; !* Add space between toolbar and advertisements *!*/
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+/* Grid items spacing */
+.advertisement-grid-item {
+    flex: 1 1 calc(33.33% - 16px); /* Adjust for 3 items per row */
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
 }
 
 /* Formulaire */
-p:panel {
+
+.p-panel {
     margin: 20px auto;
     padding: 20px;
     background: #fff;
@@ -28,7 +68,7 @@ p:panel {
     width: 400px; /* Ajustez en fonction de vos besoins */
 }
 
-p:commandButton {
+.p-commandButton {
     margin-top: 20px;
 }
 /* Appliquer une couleur rose au survol des boutons radio */
@@ -53,3 +93,42 @@ p:commandButton {
     color: #dc5f9d;
     text-decoration: underline;
 }
+
+.advertisement-item .advertisement-item-content {
+    border: 1px solid var(--surface-d);
+    border-radius: 3px;
+    margin: .3rem;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.advertisement-item .advertisement-image {
+    width: 50%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
+}
+
+
+
+/* Badge Style */
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #ffffff;
+}
+
+.badge-AVAILABLE {
+    background: #C8E6CA;
+    color: darkgreen;
+}
+
+.badge-PENDING {
+    background: #FEEDAF;
+    color: saddlebrown;
+}
+
+.badge-UNAVAILABLE {
+    background: #FFCDD2;
+    color:#dc3545;
+}
+

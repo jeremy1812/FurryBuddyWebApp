@@ -10,8 +10,13 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.primefaces.shaded.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
@@ -276,6 +281,57 @@ public class FurryBuddyService {
         return response.getStatus() == 200;
     }
 
+    //filter advertisements
+    public List<Advertisement> filterAdvertisements(String species, String breed, String gender, List<String> compatibility) {
+        WebTarget target = serviceTarget
+                .path("advertisements")
+                .path("filter")
+                .queryParam("species", species)
+                .queryParam("breed", breed)
+                .queryParam("gender", gender);
+
+        if (compatibility != null) {
+            compatibility.forEach(comp -> target.queryParam("compatibility", comp));
+        }
+
+        Response response = target.request(MediaType.APPLICATION_JSON).get();
+
+        if (response.getStatus() == 200 && response.hasEntity()) {
+            return response.readEntity(new GenericType<List<Advertisement>>() {});
+        } else {
+            throw new RuntimeException("Failed to filter advertisements: " + response.getStatus());
+        }
+    }
+
+    //get random pet picture
+    public String fetchRandomDogImage() {
+        try {
+            URL url = new URL("https://dog.ceo/api/breeds/image/random");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == 200) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+
+                // Parse JSON to extract image URL
+                String json = response.toString();
+                String imageUrl = new JSONObject(json).getString("message");
+                return imageUrl;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // Fallback placeholder image
+        return "https://via.placeholder.com/200x150.png?text=No+Image";
+    }
 
     /*
     Adoption request operations

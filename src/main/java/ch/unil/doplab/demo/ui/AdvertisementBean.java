@@ -8,7 +8,11 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +40,7 @@ public class AdvertisementBean extends Advertisement implements Serializable {
     private Location location;
 
     // Image Field
-    private byte[] image;
+    private String image;
 
     // Filter options
     private List<String> speciesOptions;
@@ -164,11 +168,11 @@ public class AdvertisementBean extends Advertisement implements Serializable {
     }
 
     // Getters and Setters for Image
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -188,10 +192,9 @@ public class AdvertisementBean extends Advertisement implements Serializable {
     }
 
     public void loadAllAdvertisements() {
-//        allAdvertisements = theService.getAllAdvertisements();
-        filteredAdvertisements = new ArrayList<>(theService.getAllAdvertisements());
+        allAdvertisements = theService.filterAdvertisements(selectedSpecies, selectedBreed, selectedGender, selectedCompatibility);
+//        filteredAdvertisements = new ArrayList<>(theService.getAllAdvertisements());
     }
-
 
     public List<Advertisement> getAllAdvertisements() {
         return allAdvertisements;
@@ -219,6 +222,7 @@ public class AdvertisementBean extends Advertisement implements Serializable {
             }
 
             // Send the advertisement to the service for saving
+            advertisement.setImageURL(theService.fetchRandomDogImage());
             advertisement = theService.addAdvertisement(advertisement);
             log.info("Advertisement successfully created: " + advertisement);
 
@@ -334,47 +338,28 @@ public class AdvertisementBean extends Advertisement implements Serializable {
     }
 
     public void applyFilters() {
-        filteredAdvertisements = allAdvertisements.stream()
-                .filter(ad -> (selectedSpecies == null || selectedSpecies.isEmpty() || selectedSpecies.equals(ad.getPet().getSpecies())))
-                .filter(ad -> (selectedBreed == null || selectedBreed.isEmpty() || selectedBreed.equals(ad.getPet().getBreed())))
-                .filter(ad -> (selectedGender == null || selectedGender.isEmpty() || matchesGender(ad.getPet().getGender())))
-                .filter(ad -> matchesCompatibilityFlags(ad.getPet()))
-                .collect(Collectors.toList());
-
-        log.info("Filtered Advertisements: " + filteredAdvertisements.size());
+        try {
+            this.filteredAdvertisements = theService.filterAdvertisements(selectedSpecies, selectedBreed, selectedGender, selectedCompatibility);
+            log.info("Filtered advertisements retrieved: " + filteredAdvertisements.size());
+            PrimeFaces.current().ajax().update("advertisementForm");
+        } catch (Exception e) {
+            log.severe("Failed to apply filters: " + e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Filter Error", "Unable to filter advertisements."));
+        }
     }
 
-    private boolean matchesCompatibilityFlags(Pet pet) {
-        if (selectedCompatibility == null || selectedCompatibility.isEmpty()) {
-            return true; // No compatibility filter applied
-        }
-
-        boolean match = true;
-        if (selectedCompatibility.contains("Good with Kids")) {
-            match &= pet.isCompatibleWithKids();
-        }
-        if (selectedCompatibility.contains("Good with Other Animals")) {
-            match &= pet.isCompatibleWithOtherAnimals();
-        }
-        if (selectedCompatibility.contains("Suitable for Inexperienced Owners")) {
-            match &= pet.isCompatibleWithInexperiencedOwners();
-        }
-        if (selectedCompatibility.contains("Suitable for Families")) {
-            match &= pet.isCompatibleWithFamilies();
-        }
-        if (selectedCompatibility.contains("Suitable for House")) {
-            match &= pet.isSuitableForHouse();
-        }
-        return match;
-    }
-
-    // Helper method for gender matching
-    private boolean matchesGender(Pet.Gender gender) {
-        if (selectedGender == null || selectedGender.isEmpty()) {
-            return true; // No gender filter applied
-        }
-        return gender != null && gender.name().equalsIgnoreCase(selectedGender);
-    }
+    // Method to handle file upload
+//    public void handleImageUpload(FileUploadEvent event) {
+//        try {
+//            this.image = event.getFile().getContent(); // Read the uploaded file into the byte array
+//            FacesContext.getCurrentInstance().addMessage(null,
+//                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Image Uploaded", "File: " + event.getFile().getFileName()));
+//        } catch (Exception e) {
+//            FacesContext.getCurrentInstance().addMessage(null,
+//                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Upload Failed", e.getMessage()));
+//        }
+//    }
 
     // Vérifie si des modifications ont été faites
     public void checkIfChanged() {

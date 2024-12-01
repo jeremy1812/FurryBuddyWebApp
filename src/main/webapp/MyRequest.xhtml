@@ -10,11 +10,14 @@
 <ui:composition template="templates/AdopterTemplate.xhtml">
 
     <!-- Définition du titre de la page -->
-    <ui:define name="title">FurryBuddy - My Adoption Requests</ui:define>
+
+    <ui:define name="title">My Adoption Requests</ui:define>
     <ui:define name="section-title">My Adoption Requests</ui:define>
 
     <!-- Contenu principal -->
     <ui:define name="section-content">
+        <p:panel style="max-width: 1800px;">
+
         <f:event type="preRenderView" listener="#{adopterBean.loadMyRequests()}"/>
 
         <!-- Tableau des demandes d'adoption -->
@@ -28,16 +31,18 @@
 
             <p:column headerText="Actions">
                 <h:form>
-                    <p:commandButton value="View Ad"
-                                     actionListener="#{advertisementBean.viewDetails(adoptionRequest.advertisement)}"/>
+<!--                    <p:commandButton value="View Ad"-->
+<!--                                     actionListener="#{advertisementBean.viewDetails(adoptionRequest.advertisement)}"/>-->
                     <p:commandButton value="Cancel"
                                      actionListener="#{adoptionRequestBean.cancelAdoptionRequest(adoptionRequest)}"
-                                     update="myRequests"
+                                     update=":myRequests"
                                      rendered="#{adoptionRequest.status eq 'PENDING'}"/>
                 </h:form>
             </p:column>
 
         </p:dataTable>
+        </p:panel>
+
     </ui:define>
 
 </ui:composition>
