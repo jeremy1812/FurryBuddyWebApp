@@ -193,28 +193,29 @@ public class AdoptionRequestBean implements Serializable {
 
     //soumettre une demande
     public AdoptionRequest submitRequest(UUID advertisementID) {
-        AdoptionRequest adoptionRequest = new AdoptionRequest(
-                loginBean.getLoggedInUserId(),
-                service.getAdvertisement(advertisementID),
-                AdoptionRequest.Status.PENDING,
-                requestMessage
-        );
+                AdoptionRequest adoptionRequest = new AdoptionRequest(
+                        loginBean.getLoggedInUserId(),
+                        service.getAdvertisement(advertisementID),
+                        AdoptionRequest.Status.PENDING,
+                        requestMessage
+                );
+                adoptionRequest.setMessage(requestMessage);
 
-        try {
-            adoptionRequest = service.addAdoptionRequest(adoptionRequest);
-            log.info("Adoption Request Successfully created " + adoptionRequest.toString());
+                try {
+                    adoptionRequest = service.addAdoptionRequest(adoptionRequest);
+                    log.info("Adoption Request Successfully created " + adoptionRequest.toString());
 
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Request Submitted",
-                            "Your adoption request has been successfully submitted."));
-            return adoptionRequest;
-        } catch (Exception e) {
-            log.warning("Failed to create new adoption request: " + e.getMessage());
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Request Failed",
-                            "Could not submit the request. Please try again later."));
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                    "Request Submitted",
+                                    "Your adoption request has been successfully submitted."));
+                    return adoptionRequest;
+                } catch (Exception e) {
+                    log.warning("Failed to create new adoption request: " + e.getMessage());
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "Request Failed",
+                                    "Could not submit the request. Please try again later."));
             return null;
         }
     }
