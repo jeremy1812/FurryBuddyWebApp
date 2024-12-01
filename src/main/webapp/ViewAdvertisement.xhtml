@@ -14,17 +14,17 @@
 
         <f:event type="preRenderView" listener="#{advertisementBean.loadSpecificAdvertisement(advertisementBean.selectedAdvertisement)}" />
         <!-- Main Container -->
-        <p:panel style="max-width: 1800px; margin: 0 auto; padding: 20px;">
+        <p:panel style="width: 100%; margin: 0 auto; padding: 20px;">
             <!-- Header Section -->
-            <p:commandButton value="Back to all advertisements" onclick="window.location.href='GetAllAdvertisements.xhtml'"/>
+            <p:commandButton value="Back to all advertisements" onclick="window.location.href='GetAllAdvertisements.xhtml'" style="margin-right: 20px"/>
             <p:commandButton value="Create Request"
                              icon="pi pi-plus"
                              action="AddAdoptionRequest?faces-redirect=true"
                              process="@this"
                              oncomplete="window.location.href='AddAdoptionRequest.xhtml?selectedAdvertisementID=#{advertisementBean.selectedAdvertisement.advertisementID}'"/>
             <p:spacer height="50px"/>
-            <p:panel header="Image" style="margin-bottom: 20px;">
-                <p:galleria value="${pageContext.request.contextPath}./images/IMG_4807.JPG" var="image" panelWidth="500" panelHeight="300" showThumbnails="true">
+            <p:panel header="Image" style="margin-bottom: 20px; margin-top:20px">
+                <p:galleria value="#{advertisementBean.getAdvertisementImageUrl(advertisementBean.selectedAdvertisement)}" var="image" panelWidth="500" panelHeight="300" showThumbnails="true">
                     <p:graphicImage value="#{image}" alt="Animal Image" style="max-width: 300px; height: auto; text-align: center" />
                 </p:galleria>
             </p:panel>
@@ -35,13 +35,13 @@
             </p:panel>
 
             <!-- Details Section -->
-            <h:outputText value="Caracteristics" style="font-weight: bold; font-size: 20px"/>
+            <h:outputText value="Caracteristics" style="font-weight: bold; font-size: 20px;"/>
 
             <p:panelGrid columns="3" styleClass="details-grid" columnClasses="detail-column">
                 <p:panel header="Age">
                     <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.age} years" />
                 </p:panel>
-                <p:panel header="#{advertisementBean.selectedAdvertisement.pet.species}" style="margin-bottom: 20px;">
+                <p:panel header="Species" style="margin-bottom: 20px;">
                     <h:outputText value="#{advertisementBean.selectedAdvertisement.pet.species}" />
                 </p:panel>
                 <p:panel header="Breed">

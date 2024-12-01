@@ -74,7 +74,7 @@
                             <span class="advertisement-status badge-#{ad.status}">#{ad.status}</span>
                         </div>
                         <div class="advertisement-grid-item-content">
-                            <p:graphicImage url="#{ad.imageURL}"
+                            <p:graphicImage url="#{advertisementBean.getAdvertisementImageUrl(ad)}"
                                             alt="Pet Image" width="150"/>
                             <div class="advertisement-name">#{ad.pet.name}</div>
                             <div class="advertisement-description">#{ad.pet.description}</div>
@@ -90,7 +90,7 @@
                 <!-- List View -->
                 <p:dataViewListItem>
                     <div class="advertisement-list-item">
-                        <p:graphicImage value="${pageContext.request.contextPath}./images/IMG_4807.JPG"
+                        <p:graphicImage url="#{ad.imageURL}"
                                         alt="Pet Image" width="150"/>
                         <div class="advertisement-list-detail">
                             <div class="advertisement-name">#{ad.pet.name}</div>

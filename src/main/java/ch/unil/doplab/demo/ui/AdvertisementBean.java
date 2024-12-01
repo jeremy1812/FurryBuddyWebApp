@@ -8,18 +8,12 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.primefaces.PrimeFaces;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
-import java.io.ByteArrayInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @SessionScoped
 @Named
@@ -243,6 +237,14 @@ public class AdvertisementBean extends Advertisement implements Serializable {
         }
 
         return null;
+    }
+
+    public String getAdvertisementImageUrl(Advertisement ad) {
+        if (ad.getImageURL() == null || ad.getImageURL().isEmpty()) {
+            String randomDogImage = theService.fetchRandomDogImage(); // Fetch image dynamically
+            ad.setImageURL(randomDogImage); // Cache the fetched URL
+        }
+        return ad.getImageURL();
     }
 
     // Method to Delete Advertisement
