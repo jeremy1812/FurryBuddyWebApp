@@ -167,6 +167,7 @@ public class AdoptionRequestBean implements Serializable {
 
         try {
             service.cancelAdoptionRequest(request);
+            log.severe("Cancelled adoption request: " + request.getAdopterID());
             // Update the list of requests in the bean to reflect the change
 //            loadMyRequests();
 
@@ -176,6 +177,7 @@ public class AdoptionRequestBean implements Serializable {
                             "Request Cancelled",
                             "Adoption request has been successfully cancelled."));
         } catch (Exception e) {
+            log.severe("ERROR TOTO " + e.getMessage());
             // Display error message if the service call fails
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
